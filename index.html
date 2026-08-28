@@ -385,7 +385,7 @@ function showSettings(){
   h+=`<div class="field"><label>GitHub repo (owner/name)</label>
     <input id="gh-repo" placeholder="omarjesusperezortiz/gym-data" value="${gh&&gh.repo?gh.repo:'omarjesusperezortiz/gym-data'}"></div>`;
   h+=`<div class="field"><label>Fine-grained token</label>
-    <input id="gh-token" type="password" placeholder="github_pat_..." value="${gh&&gh.token?gh.token:''}">
+    <input id="gh-token" type="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="github_pat_..." value="${gh&&gh.token?gh.token:''}">
     <div class="hint">Scoped to just this one repo (Contents: Read+Write). Stored only on this device, never in the app code. I'll give you the 90-sec steps.</div></div>`;
   h+=`<button class="btn acc" onclick="saveGh()">Save & Sync now</button>`;
   h+=`<button class="btn sec" onclick="pullSync(true)" style="margin-top:8px">⬇︎ Pull from GitHub</button>`;
@@ -394,7 +394,7 @@ function showSettings(){
   openSheet(h);
 }
 function saveGh(){
-  const repo=$("#gh-repo").value.trim(), token=$("#gh-token").value.trim();
+  const repo=$("#gh-repo").value.replace(/\s+/g,''), token=$("#gh-token").value.replace(/\s+/g,'');
   if(!repo||!token){toast("Fill both fields");return;}
   gh={repo,token};localStorage.setItem(LS_GH,JSON.stringify(gh));
   toast("Saved — syncing…");mergeSync();
@@ -405,7 +405,7 @@ async function ghGet(){
   const r=await fetch(`https://api.github.com/repos/${gh.repo}/contents/workouts.json`,{
     headers:{Authorization:`Bearer ${gh.token}`,Accept:"application/vnd.github+json"}});
   if(r.status===404)return {data:{sessions:[]},sha:null};
-  if(!r.ok)throw new Error("GET "+r.status);
+  if(!r.ok)throw new Error("GET "+r.status+(r.status===401?" (bad/expired token)":r.status===403?" (token lacks Contents R/W)":r.status===404?" (repo not found — check owner/name)":""));
   const j=await r.json();
   const content=JSON.parse(decodeURIComponent(escape(atob(j.content))));
   return {data:content,sha:j.sha};
