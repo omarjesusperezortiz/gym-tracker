@@ -249,6 +249,40 @@ header{position:sticky;top:0;z-index:50;background:rgba(10,11,14,.82);backdrop-f
 .toast{position:fixed;left:50%;top:calc(16px + env(safe-area-inset-top));transform:translateX(-50%) translateY(-20px);background:var(--surf3);color:var(--ink);border:1px solid var(--line2);padding:11px 18px;border-radius:14px;font-weight:600;font-size:13px;z-index:200;opacity:0;transition:.3s;box-shadow:var(--sh);pointer-events:none;display:flex;align-items:center;gap:8px}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}.toast svg{width:16px;height:16px}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* Week bar */
+.weekbar{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:18px}
+.wday{background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:9px 2px 7px;text-align:center;cursor:pointer;transition:.12s;min-height:64px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:3px}
+.wday:active{transform:scale(.94)}
+.wday.today{border-color:var(--acc)}
+.wday.active{background:var(--surf2)}
+.wday .wdl{font-size:10px;font-weight:700;color:var(--mut2);text-transform:uppercase}
+.wday .wdn{font-size:15px;font-weight:600;color:var(--ink2)}
+.wday.today .wdn{color:var(--acc)}
+.wday .wmk{height:16px;display:flex;align-items:center;justify-content:center}
+.wm{width:8px;height:8px;border-radius:50%;display:inline-block}
+.wmi{font-size:12px}
+.wmr{color:var(--mut2);font-size:16px;line-height:1}
+/* stats: prevent wrap breakage */
+.cal-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px}
+.stat{background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:12px 8px;text-align:center}
+.stat .sv{font-size:22px;font-weight:700;letter-spacing:-.5px;line-height:1}
+.stat .sv.acc{color:var(--acc)}
+.stat .sl{font-size:10.5px;color:var(--mut);margin-top:4px;white-space:nowrap}
+/* legend */
+.cal-legend{margin-top:14px;font-size:11.5px;color:var(--mut);text-align:center;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:2px}
+.cal-legend .lg{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:4px;vertical-align:middle}
+/* grid cells: ensure min height + no overflow */
+.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.cell{aspect-ratio:1;min-height:0;border-radius:10px;background:var(--surf);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;cursor:pointer;transition:.12s;overflow:hidden}
+.cell .dn{font-size:13px;font-weight:600;color:var(--ink2)}
+.cell .dots{display:flex;gap:2px;margin-top:3px;height:5px}
+.cell .dots i{width:5px;height:5px;border-radius:50%}
+/* quick log */
+.quicklog{display:flex;gap:10px;margin-bottom:4px}
+.quicklog .ql{flex:1;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--surf);color:var(--ink2);font-weight:600;font-size:14px;cursor:pointer}
+.quicklog .ql.skate.on{background:rgba(90,169,255,.15);border-color:var(--blue);color:var(--blue)}
+.quicklog .ql.rest.on{background:var(--surf3);border-color:var(--line2);color:var(--ink)}
 </style>
 </head>
 <body>
@@ -521,38 +555,55 @@ function finishWorkout(){
 
 /* ---------- CALENDAR ---------- */
 function dayKey(d){return d.toISOString().slice(0,10);}
+function dotColor(e){return e.type==='skate'?'var(--blue)':e.type==='rest'?'var(--mut2)':HUEof(e);}
 function renderCalendar(){
   const w=$("#wrap");
   const l=log();
   const byDay={};l.forEach(e=>{const k=e.date.slice(0,10);(byDay[k]=byDay[k]||[]).push(e);});
   const y=calMonth.getFullYear(),m=calMonth.getMonth();
-  const first=new Date(y,m,1),start=(first.getDay()+6)%7; // Mon=0
+  const first=new Date(y,m,1),start=(first.getDay()+6)%7;
   const days=new Date(y,m+1,0).getDate();
   const today=dayKey(new Date());
-  const monthName=calMonth.toLocaleDateString(undefined,{month:'long',year:'numeric'});
-  // stats
+  const monthName=calMonth.toLocaleDateString(undefined,{month:'short',year:'numeric'});
   const monthCount=Object.keys(byDay).filter(k=>k.slice(0,7)===`${y}-${String(m+1).padStart(2,'0')}`).length;
   const streak=calcStreak(byDay);
-  let h=`<div class="cal"><div class="cal-hd"><div class="mtitle">${monthName}</div>
-    <div class="cal-nav"><button data-mv="-1">‹</button><button data-mv="0">•</button><button data-mv="1">›</button></div></div>
+  const now=new Date();const wd=(now.getDay()+6)%7;
+  const monday=new Date(now);monday.setHours(0,0,0,0);monday.setDate(now.getDate()-wd);
+  const DN=["M","T","W","T","F","S","S"];let week='';
+  for(let i=0;i<7;i++){
+    const dd=new Date(monday);dd.setDate(monday.getDate()+i);const key=dayKey(dd);
+    const evs=byDay[key]||[];const isToday=key===today;
+    const gym=evs.filter(e=>!e.type||e.type==='workout');
+    let mark='';
+    if(gym.length)mark=`<span class="wm" style="background:${dotColor(gym[0])}"></span>`;
+    else if(evs.some(e=>e.type==='skate'))mark=`<span class="wmi">\u{1F6F9}</span>`;
+    else if(evs.some(e=>e.type==='rest'))mark=`<span class="wmr">\u00B7</span>`;
+    week+=`<div class="wday ${isToday?'today':''} ${evs.length?'active':''}" data-week="${key}"><div class="wdl">${DN[i]}</div><div class="wdn">${dd.getDate()}</div><div class="wmk">${mark}</div></div>`;
+  }
+  let h=`<div class="cal">
+    <div class="sec-h" style="margin:2px 2px 10px">This week</div>
+    <div class="weekbar">${week}</div>
     <div class="cal-stats">
-      <div class="stat"><div class="sv acc">${monthCount}</div><div class="sl">workouts this month</div></div>
-      <div class="stat"><div class="sv">${streak}</div><div class="sl">day streak 🔥</div></div>
-      <div class="stat"><div class="sv">${l.length}</div><div class="sl">total logged</div></div>
-    </div><div class="grid">`;
-  ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].forEach(d=>h+=`<div class="gh">${d}</div>`);
+      <div class="stat"><div class="sv acc">${monthCount}</div><div class="sl">this month</div></div>
+      <div class="stat"><div class="sv">${streak}</div><div class="sl">streak \u{1F525}</div></div>
+      <div class="stat"><div class="sv">${l.length}</div><div class="sl">total</div></div>
+    </div>
+    <div class="cal-hd"><div class="mtitle">${monthName}</div>
+      <div class="cal-nav"><button data-mv="-1">\u2039</button><button data-mv="0">\u2022</button><button data-mv="1">\u203A</button></div></div>
+    <div class="grid">`;
+  DN.forEach(d=>h+=`<div class="gh">${d}</div>`);
   for(let i=0;i<start;i++)h+=`<div class="cell empty"></div>`;
   for(let d=1;d<=days;d++){
     const key=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const evs=byDay[key]||[];
-    const dots=evs.slice(0,3).map(e=>`<i style="background:${HUEof(e)}"></i>`).join('');
-    h+=`<div class="cell ${evs.length?'has':''} ${key===today?'today':''}" ${evs.length?`data-day="${key}"`:''}>
-      <div class="dn">${d}</div><div class="dots">${dots}</div></div>`;
+    const dots=evs.slice(0,3).map(e=>`<i style="background:${dotColor(e)}"></i>`).join('');
+    h+=`<div class="cell ${evs.length?'has':''} ${key===today?'today':''}" data-day="${key}"><div class="dn">${d}</div><div class="dots">${dots}</div></div>`;
   }
-  h+=`</div><div class="cal-legend"><span>Dots = workouts. Tap a day to view or repeat it.</span></div></div>`;
+  h+=`</div><div class="cal-legend"><i class="lg" style="background:var(--acc)"></i> workout &nbsp; <i class="lg" style="background:var(--blue)"></i> skate &nbsp; <i class="lg" style="background:var(--mut2)"></i> rest</div></div>`;
   w.innerHTML=h;
   w.querySelectorAll('[data-mv]').forEach(e=>e.onclick=()=>{const v=+e.dataset.mv;if(v===0)calMonth=new Date();else calMonth=new Date(y,m+v,1);renderCalendar();});
-  w.querySelectorAll('[data-day]').forEach(e=>e.onclick=()=>showDay(e.dataset.day,byDay[e.dataset.day]));
+  w.querySelectorAll('[data-day]').forEach(e=>e.onclick=()=>showDay(e.dataset.day,byDay[e.dataset.day]||[]));
+  w.querySelectorAll('[data-week]').forEach(e=>e.onclick=()=>showDay(e.dataset.week,byDay[e.dataset.week]||[]));
 }
 function calcStreak(byDay){
   // consecutive days up to today with a workout
@@ -563,19 +614,34 @@ function calcStreak(byDay){
 }
 function showDay(key,evs){
   const d=new Date(key+"T00:00:00");
-  let h=`<div class="grab"></div><h2>${d.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'})}</h2><div class="sh-sub">${evs.length} workout${evs.length!==1?'s':''} logged</div>`;
-  evs.forEach((e,idx)=>{
+  const workouts=evs.filter(e=>!e.type||e.type==='workout');
+  const skated=evs.some(e=>e.type==='skate');const rested=evs.some(e=>e.type==='rest');
+  let h=`<div class="grab"></div><h2>${d.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'})}</h2>`;
+  h+=`<div class="sh-sub">${workouts.length?workouts.length+' workout'+(workouts.length!==1?'s':''):'nothing logged yet'}${skated?' \u00B7 \u{1F6F9} skated':''}${rested?' \u00B7 rest':''}</div>`;
+  workouts.forEach((e)=>{
     const pl=DATA.plans[e.plan]?DATA.plans[e.plan].label:e.plan;
     const canRepeat=DATA.plans[e.plan]&&DATA.plans[e.plan].sessions[e.sess];
-    h+=`<div class="hentry"><div class="hd"><span class="hbadge" style="color:${HUEof(e)}">${DATA.plans[e.plan]?DATA.plans[e.plan].icon:''} ${pl} · ${e.name}</span>
-      <span class="htime">${new Date(e.date).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span></div><div class="hln">`;
-    h+=(e.slots||[]).map(s=>{const sets=(s.sets||[]).map(x=>`${x.w||'–'}×${x.r||'–'}`).join('  ');
-      return `<b>${s.slot}</b> <span style="color:var(--mut)">${s.kind}${s.force?' · 💪':''}</span> ${sets||'✓'}`;}).join('<br>');
+    h+=`<div class="hentry"><div class="hd"><span class="hbadge" style="color:${HUEof(e)}">${DATA.plans[e.plan]?DATA.plans[e.plan].icon:''} ${pl} \u00B7 ${e.name}</span>`;
+    h+=`<span class="htime">${new Date(e.date).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span></div><div class="hln">`;
+    h+=(e.slots||[]).map(s=>{const sets=(s.sets||[]).map(x=>`${x.w||'\u2013'}\u00D7${x.r||'\u2013'}`).join('  ');
+      return `<b>${s.slot}</b> <span style="color:var(--mut)">${s.kind}${s.force?' \u00B7 \u{1F4AA}':''}</span> ${sets||'\u2713'}`;}).join('<br>');
     h+=`</div>`;
-    if(canRepeat)h+=`<button class="btn sec" style="margin-top:10px" onclick="editLogEntry('${e.id}')">▶ Continue / edit this workout</button>`;
+    if(canRepeat)h+=`<button class="btn sec" style="margin-top:10px" onclick="editLogEntry('${e.id}')">\u25B6 Continue / edit this workout</button>`;
     h+=`</div>`;});
-  h+=`<button class="btn acc" onclick="hideModal()">Close</button>`;
+  h+=`<div class="sec-label" style="margin-top:6px">Log for this day</div><div class="quicklog">`;
+  h+=`<button class="ql skate ${skated?'on':''}" onclick="toggleDayType('${key}','skate')">\u{1F6F9} Skate</button>`;
+  h+=`<button class="ql rest ${rested?'on':''}" onclick="toggleDayType('${key}','rest')">\u{1F634} Rest</button></div>`;
+  h+=`<button class="btn acc" onclick="hideModal()" style="margin-top:12px">Close</button>`;
   openSheet(h);
+}
+function toggleDayType(key,type){
+  let l=log();
+  const existing=l.find(e=>e.type===type && e.date.slice(0,10)===key);
+  if(existing){l=l.filter(e=>e!==existing);toast((type==='skate'?"Skate":"Rest")+" removed");}
+  else{l.push({id:Date.now(),date:new Date(key+"T12:00:00").toISOString(),type,name:type==='skate'?'Skate':'Rest'});toast((type==='skate'?"\u{1F6F9} Skate":"\u{1F634} Rest")+" logged");}
+  saveLog(l);if(gh&&gh.token)pushSync();
+  const byDay={};log().forEach(e=>{const k=e.date.slice(0,10);(byDay[k]=byDay[k]||[]).push(e);});
+  showDay(key,byDay[key]||[]);renderCalendar();
 }
 function editLogEntry(id){
   hideModal();
