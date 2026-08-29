@@ -149,6 +149,12 @@ header{position:sticky;top:0;z-index:50;background:rgba(10,11,14,.82);backdrop-f
 .cell .dots i{width:5px;height:5px;border-radius:50%}
 .cell:active{transform:scale(.94)}
 
+
+.cal-legend{margin-top:16px;font-size:12px;color:var(--mut);text-align:center;line-height:1.5}
+.cell.has{background:var(--surf2);border-color:var(--line2)}
+.cell.today{border-color:var(--acc);border-width:1.5px}
+.cell.has:active{transform:scale(.92)}
+
 /* Meals */
 .meals{padding:16px}
 .mcard{background:var(--surf);border:1px solid var(--line);border-radius:var(--r-lg);padding:16px;margin-bottom:14px}
@@ -534,7 +540,7 @@ function renderCalendar(){
     h+=`<div class="cell ${evs.length?'has':''} ${key===today?'today':''}" ${evs.length?`data-day="${key}"`:''}>
       <div class="dn">${d}</div><div class="dots">${dots}</div></div>`;
   }
-  h+=`</div><div class="sec-h" style="margin-top:18px">Tap a highlighted day to see the workout</div></div>`;
+  h+=`</div><div class="cal-legend"><span>Dots = workouts. Tap a day to view or repeat it.</span></div></div>`;
   w.innerHTML=h;
   w.querySelectorAll('[data-mv]').forEach(e=>e.onclick=()=>{const v=+e.dataset.mv;if(v===0)calMonth=new Date();else calMonth=new Date(y,m+v,1);renderCalendar();});
   w.querySelectorAll('[data-day]').forEach(e=>e.onclick=()=>showDay(e.dataset.day,byDay[e.dataset.day]));
@@ -548,16 +554,23 @@ function calcStreak(byDay){
 }
 function showDay(key,evs){
   const d=new Date(key+"T00:00:00");
-  let h=`<div class="grab"></div><h2>${d.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'})}</h2><div class="sh-sub">${evs.length} workout${evs.length!==1?'s':''}</div>`;
-  evs.forEach(e=>{
+  let h=`<div class="grab"></div><h2>${d.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'})}</h2><div class="sh-sub">${evs.length} workout${evs.length!==1?'s':''} logged</div>`;
+  evs.forEach((e,idx)=>{
     const pl=DATA.plans[e.plan]?DATA.plans[e.plan].label:e.plan;
-    h+=`<div class="hentry"><div class="hd"><span class="hbadge" style="color:${HUEof(e)}">${pl} · ${e.name}</span>
+    const canRepeat=DATA.plans[e.plan]&&DATA.plans[e.plan].sessions[e.sess];
+    h+=`<div class="hentry"><div class="hd"><span class="hbadge" style="color:${HUEof(e)}">${DATA.plans[e.plan]?DATA.plans[e.plan].icon:''} ${pl} · ${e.name}</span>
       <span class="htime">${new Date(e.date).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span></div><div class="hln">`;
     h+=(e.slots||[]).map(s=>{const sets=(s.sets||[]).map(x=>`${x.w||'–'}×${x.r||'–'}`).join('  ');
       return `<b>${s.slot}</b> <span style="color:var(--mut)">${s.kind}${s.force?' · 💪':''}</span> ${sets||'✓'}`;}).join('<br>');
-    h+=`</div></div>`;});
+    h+=`</div>`;
+    if(canRepeat)h+=`<button class="btn sec" style="margin-top:10px" onclick="openSession('${e.plan}','${e.sess}')">▶ Do this workout again</button>`;
+    h+=`</div>`;});
   h+=`<button class="btn acc" onclick="hideModal()">Close</button>`;
   openSheet(h);
+}
+function openSession(pk,dk){
+  hideModal();
+  plan=pk;localStorage.setItem(LS_PLAN,plan);cur=dk;started=true;view='train';window.scrollTo(0,0);render();
 }
 
 /* ---------- MEALS ---------- */
