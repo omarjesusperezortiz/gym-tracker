@@ -272,19 +272,6 @@ header{position:sticky;top:0;z-index:50;background:rgba(10,11,14,.82);backdrop-f
 .quicklog .ql.skate.on{background:rgba(90,169,255,.15);border-color:var(--blue);color:var(--blue)}
 .quicklog .ql.rest.on{background:var(--surf3);border-color:var(--line2);color:var(--ink)}
 
-/* Rest timer */
-.resttimer{position:fixed;left:14px;right:14px;z-index:46;background:var(--surf3);border:1px solid var(--acc);
-  border-radius:16px;padding:10px 12px;display:none;align-items:center;justify-content:space-between;gap:10px;
-  box-shadow:0 8px 24px rgba(0,0,0,.35)}
-.resttimer.show{display:flex}
-.rt-time{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--acc);letter-spacing:-.5px;flex:none;min-width:60px}
-.rt-time.rt-done{font-size:14px;color:var(--ok)}
-.rt-btns{display:flex;gap:8px;flex:1;justify-content:flex-end}
-.rt-btn{min-width:44px;min-height:44px;padding:0 12px;border-radius:12px;background:var(--surf2);border:1px solid var(--line2);
-  color:var(--ink);font-weight:700;font-size:13px;cursor:pointer}
-.rt-btn:active{transform:scale(.93)}
-.rt-btn.rt-skip{background:rgba(255,95,107,.12);border-color:rgba(255,95,107,.3);color:var(--danger)}
-
 /* Progress view */
 .progress-view{padding:6px 16px 16px}
 .prog-select{width:100%;background:var(--surf);border:1px solid var(--line);border-radius:12px;color:var(--ink);

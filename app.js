@@ -8,7 +8,6 @@ let pref=JSON.parse(localStorage.getItem(LS_PREF)||"{}");
 let gh=JSON.parse(localStorage.getItem(LS_GH)||"null");
 let syncState="off";
 let progExercise=null;
-let restTimer=null,audioCtx=null;
 const $=s=>document.querySelector(s);
 const KINDLABEL={bar:"Barbell",cable:"Cable",db:"Dumbbell",gym:"Gym",bw:"Bodyweight"};
 const ico={
@@ -84,7 +83,6 @@ function render(){
   else if(view==='calendar')renderCalendar();
   else if(view==='progress')renderProgress();
   else renderMeals();
-  positionTimerBar();
 }
 
 
@@ -212,7 +210,7 @@ function renderTrain(){
     h+=`</div><button class="addset" data-add="${k}">+ Add set</button></div>`;
     card.innerHTML=h;w.appendChild(card);
   });
-  w.querySelectorAll('[data-chk]').forEach(e=>e.onclick=()=>{const k=e.dataset.chk,wasDone=live[k].done;live[k].done=!wasDone;if(navigator.vibrate)navigator.vibrate(8);if(!wasDone&&live[k].done)startRestTimer();saveDraft();renderTrain();});
+  w.querySelectorAll('[data-chk]').forEach(e=>e.onclick=()=>{live[e.dataset.chk].done=!live[e.dataset.chk].done;if(navigator.vibrate)navigator.vibrate(8);saveDraft();renderTrain();});
   w.querySelectorAll('[data-force]').forEach(e=>e.onclick=()=>{const k=e.dataset.force;live[k].force=!live[k].force;saveDraft();renderTrain();});
   w.querySelectorAll('[data-vk]').forEach(e=>e.onclick=()=>{const k=e.dataset.vk,kind=e.dataset.kind,slot=k.split("|")[2];live[k].kind=kind;live[k].sets=null;pref[plan+"|"+slot]=kind;savePref();saveDraft();renderTrain();});
   w.querySelectorAll('input[data-sk]').forEach(e=>e.oninput=()=>{const k=e.dataset.sk,i=+e.dataset.si,f=e.dataset.f;live[k].sets[i][f]=e.value;e.classList.toggle('filled',!!e.value);saveDraft();});
@@ -245,90 +243,6 @@ function finishWorkout(){
   const wasEdit=editingId!=null;editingId=null;
   toast(wasEdit?(s.name+" updated ✏️"):(s.name+" finished! 🎉"),ico.save);if(navigator.vibrate)navigator.vibrate([10,40,10]);
   if(gh&&gh.token)pushSync();goHome();
-}
-
-/* ---------- REST TIMER ---------- */
-function restDefault(){return pref.restSec||90;}
-function beepAlarm(){
-  try{
-    if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();
-    if(audioCtx.state==='suspended')audioCtx.resume();
-    const t0=audioCtx.currentTime;
-    [0,0.18].forEach(off=>{
-      const o=audioCtx.createOscillator(),g=audioCtx.createGain();
-      o.type='sine';o.frequency.value=880;
-      g.gain.setValueAtTime(0.0001,t0+off);
-      g.gain.exponentialRampToValueAtTime(0.3,t0+off+0.01);
-      g.gain.exponentialRampToValueAtTime(0.0001,t0+off+0.15);
-      o.connect(g);g.connect(audioCtx.destination);
-      o.start(t0+off);o.stop(t0+off+0.17);
-    });
-  }catch(e){}
-  if(navigator.vibrate)navigator.vibrate([200,100,200]);
-}
-function startRestTimer(sec){
-  try{if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume();}catch(e){}
-  if(restTimer){clearInterval(restTimer.iv);clearTimeout(restTimer.hideT);}
-  const total=sec||restDefault();
-  restTimer={deadline:Date.now()+total*1000,total,iv:null,hideT:null,done:false};
-  restTimer.iv=setInterval(tickRestTimer,250);
-  renderRestTimer();
-}
-function tickRestTimer(){
-  if(!restTimer)return;
-  const rem=Math.max(0,Math.round((restTimer.deadline-Date.now())/1000));
-  if(rem<=0&&!restTimer.done){
-    restTimer.done=true;
-    clearInterval(restTimer.iv);restTimer.iv=null;
-    beepAlarm();
-    renderRestTimer();
-    restTimer.hideT=setTimeout(hideRestTimer,2500);
-    return;
-  }
-  renderRestTimer();
-}
-function adjustRestTimer(delta){
-  if(!restTimer)return;
-  restTimer.deadline+=delta*1000;
-  const remNow=Math.round((restTimer.deadline-Date.now())/1000);
-  if(remNow<0)restTimer.deadline=Date.now();
-  if(restTimer.done&&remNow>0){
-    restTimer.done=false;clearTimeout(restTimer.hideT);
-    restTimer.iv=setInterval(tickRestTimer,250);
-  }
-  renderRestTimer();
-}
-function hideRestTimer(){
-  if(restTimer){clearInterval(restTimer.iv);clearTimeout(restTimer.hideT);}
-  restTimer=null;
-  const bar=$("#resttimer");if(bar){bar.classList.remove('show');bar.innerHTML='';}
-}
-function fmtMMSS(s){const m=Math.floor(s/60),ss=s%60;return `${m}:${String(ss).padStart(2,'0')}`;}
-function renderRestTimer(){
-  const bar=$("#resttimer");if(!bar||!restTimer)return;
-  const rem=Math.max(0,Math.round((restTimer.deadline-Date.now())/1000));
-  bar.classList.add('show');
-  bar.innerHTML=`<div class="rt-time ${restTimer.done?'rt-done':''}">${restTimer.done?'Rest done 💪':fmtMMSS(rem)}</div>
-    <div class="rt-btns">
-      <button class="rt-btn" data-rt="-15">−15</button>
-      <button class="rt-btn" data-rt="+15">+15</button>
-      <button class="rt-btn rt-skip" data-rt="skip">Skip</button>
-    </div>`;
-  bar.querySelectorAll('[data-rt]').forEach(b=>b.onclick=()=>{
-    const a=b.dataset.rt;
-    if(a==='skip')hideRestTimer();else adjustRestTimer(parseInt(a));
-  });
-  positionTimerBar();
-}
-function positionTimerBar(){
-  const bar=$("#resttimer");if(!bar)return;
-  const dock=$("#dock");
-  if(dock&&!dock.classList.contains('hide')){
-    const r=dock.getBoundingClientRect();
-    bar.style.bottom=Math.round(window.innerHeight-r.top+8)+"px";
-  }else{
-    bar.style.bottom="calc(78px + env(safe-area-inset-bottom))";
-  }
 }
 
 /* ---------- CALENDAR ---------- */
@@ -555,10 +469,8 @@ function showSettings(){
   h+=`<button class="btn acc" onclick="saveGh()">Save & Sync now</button>`;
   h+=`<button class="btn sec" onclick="pullSync(true)" style="margin-top:8px">⬇︎ Pull from GitHub</button>`;
   if(gh&&gh.token)h+=`<button class="btn sec" onclick="disconnectGh()" style="margin-top:8px;color:var(--danger)">Disconnect</button>`;
-  h+=`<div class="field" style="margin-top:16px"><label>Rest timer default (seconds)</label><input id="rest-default" inputmode="numeric" value="${pref.restSec||90}"></div>`;
   h+=`<button class="btn sec" onclick="hideModal()" style="margin-top:8px">Close</button>`;
   openSheet(h);
-  const rd=$("#rest-default");if(rd)rd.oninput=()=>{const v=parseInt(rd.value);pref.restSec=(v>0?v:90);savePref();};
 }
 function saveGh(){const repo=$("#gh-repo").value.replace(/\s+/g,''),token=$("#gh-token").value.replace(/\s+/g,'');
   if(!repo||!token){toast("Fill both fields");return;}gh={repo,token};localStorage.setItem(LS_GH,JSON.stringify(gh));toast("Saved — syncing…");mergeSync();}
