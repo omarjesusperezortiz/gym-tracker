@@ -230,9 +230,25 @@ function finishWorkout(){
     const sets=(st.sets||[]).filter(x=>x.w!==""||x.r!=="").map(x=>({w:x.w,r:x.r}));
     if(sets.length||st.done)slots.push({slot,kind:st.kind,done:st.done,force:!!st.force,sets});});
   if(!slots.length){toast("Log something first 💪");return;}
+  if(editingId!=null){completeFinish(slots,s,editingId);return;}
+  const today=new Date().toISOString().slice(0,10);
+  const dup=log().find(e=>!e.type&&e.plan===plan&&e.sess===cur&&(e.date||"").slice(0,10)===today);
+  if(dup)confirmDupeFinish(dup,slots,s);
+  else completeFinish(slots,s,null);
+}
+function confirmDupeFinish(dup,slots,s){
+  let h=`<div class="grab"></div><h2>Already logged today</h2>
+    <div class="sh-sub">You already logged <b>${dup.name}</b> today. Update that session instead of creating a new one?</div>
+    <button class="btn acc" style="padding:14px" data-dupe="update">Update existing session</button>
+    <button class="btn sec" style="padding:14px" data-dupe="new">No, log as a new session</button>`;
+  openSheet(h);
+  $('[data-dupe="update"]').onclick=()=>{hideModal();completeFinish(slots,s,dup.id);};
+  $('[data-dupe="new"]').onclick=()=>{hideModal();completeFinish(slots,s,null);};
+}
+function completeFinish(slots,s,targetId){
   const l=log();
-  if(editingId!=null){
-    const idx=l.findIndex(e=>String(e.id)===String(editingId));
+  if(targetId!=null){
+    const idx=l.findIndex(e=>String(e.id)===String(targetId));
     if(idx>=0){l[idx]={...l[idx],plan,sess:cur,name:s.name,slots};}
     else{l.push({id:Date.now(),date:new Date().toISOString(),plan,sess:cur,name:s.name,slots});}
   }else{
@@ -240,8 +256,8 @@ function finishWorkout(){
   }
   saveLog(l);
   s.slots.forEach(sl=>delete live[keyOf(sl[0])]);saveDraft();
-  const wasEdit=editingId!=null;editingId=null;
-  toast(wasEdit?(s.name+" updated ✏️"):(s.name+" finished! 🎉"),ico.save);if(navigator.vibrate)navigator.vibrate([10,40,10]);
+  const wasUpdate=targetId!=null;editingId=null;
+  toast(wasUpdate?(s.name+" updated ✏️"):(s.name+" finished! 🎉"),ico.save);if(navigator.vibrate)navigator.vibrate([10,40,10]);
   if(gh&&gh.token)pushSync();goHome();
 }
 
@@ -482,7 +498,20 @@ async function ghGet(){const r=await fetch(`https://api.github.com/repos/${gh.re
 async function ghPut(data,sha){const body={message:"workout sync "+new Date().toISOString(),content:btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2))))};if(sha)body.sha=sha;
   const r=await fetch(`https://api.github.com/repos/${gh.repo}/contents/workouts.json`,{method:"PUT",headers:{Authorization:`Bearer ${gh.token}`,Accept:"application/vnd.github+json"},body:JSON.stringify(body)});
   if(!r.ok)throw new Error("PUT "+r.status);return r.json();}
-function mergeLogs(remote,local){const map={};[...(remote||[]),...(local||[])].forEach(s=>{if(s&&s.id!=null)map[s.id]=s;else if(s)map[s.date]=s;});return Object.values(map).sort((a,b)=>new Date(a.date)-new Date(b.date));}
+function dedupeWorkoutLogs(arr){
+  const groups={},passthrough=[];
+  (arr||[]).forEach(e=>{
+    if(!e)return;
+    if(e.type){passthrough.push(e);return;} // skate/rest markers: untouched
+    const key=e.plan+"|"+e.sess+"|"+(e.date||"").slice(0,10);
+    const existing=groups[key];
+    if(!existing){groups[key]=e;return;}
+    const rank=x=>x.id!=null?Number(x.id):new Date(x.date).getTime();
+    if(rank(e)>=rank(existing))groups[key]=e;
+  });
+  return [...passthrough,...Object.values(groups)].sort((a,b)=>new Date(a.date)-new Date(b.date));
+}
+function mergeLogs(remote,local){const map={};[...(remote||[]),...(local||[])].forEach(s=>{if(s&&s.id!=null)map[s.id]=s;else if(s)map[s.date]=s;});return dedupeWorkoutLogs(Object.values(map).sort((a,b)=>new Date(a.date)-new Date(b.date)));}
 async function mergeSync(){if(!gh||!gh.token){syncState="off";return;}syncState="sync";refreshSyncUI();
   try{const {data,sha}=await ghGet();const merged=mergeLogs(data.sessions,log());saveLog(merged);
     await ghPut({version:2,updatedAt:new Date().toISOString(),device:navigator.platform,sessions:merged},sha);syncState="ok";toast("Synced ✓",ico.save);}
