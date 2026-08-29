@@ -7,6 +7,8 @@ let live=JSON.parse(localStorage.getItem(LS_DRAFT)||"{}"), calMonth=new Date();
 let pref=JSON.parse(localStorage.getItem(LS_PREF)||"{}");
 let gh=JSON.parse(localStorage.getItem(LS_GH)||"null");
 let syncState="off";
+let progExercise=null;
+let restTimer=null,audioCtx=null;
 const $=s=>document.querySelector(s);
 const KINDLABEL={bar:"Barbell",cable:"Cable",db:"Dumbbell",gym:"Gym",bw:"Bodyweight"};
 const ico={
@@ -19,7 +21,8 @@ const ico={
  cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>',
  meal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h0a2 2 0 002-2V2M5 2v20M13 2v20M13 8c0-3 1.5-6 4-6v20"/></svg>',
  gear:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>',
- empty:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6.5 6.5l11 11M2 6l4-4M18 22l4-4"/></svg>'
+ empty:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6.5 6.5l11 11M2 6l4-4M18 22l4-4"/></svg>',
+ progress:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 9l-5 5-4-4-3 3"/></svg>'
 };
 const DAYCOLORS=["#ff9f4d","var(--push)","var(--pull)","#5ad6c4","#ff6b9d","#7c9dff","var(--warn)","var(--full)","var(--violet)"];
 function dayColor(planKey,dayKey){const keys=Object.keys(DATA.plans[planKey].sessions);const i=keys.indexOf(dayKey);return DAYCOLORS[(i>=0?i:0)%DAYCOLORS.length];}
@@ -48,7 +51,7 @@ function renderShell(){
   $("#planrow").innerHTML=ph;
   $("#planrow").querySelectorAll('[data-plan]').forEach(e=>e.onclick=()=>{plan=e.dataset.plan;localStorage.setItem(LS_PLAN,plan);cur=null;live={};render();});
   // nav
-  const navs=[["home","Home",ico.home],["calendar","Calendar",ico.cal],["meals","Meals",ico.meal]];
+  const navs=[["home","Home",ico.home],["calendar","Calendar",ico.cal],["progress","Progress",ico.progress],["meals","Meals",ico.meal]];
   $("#nav").innerHTML=navs.map(([v,l,i])=>`<div class="ni ${v===view?'active':''}" data-view="${v}">${i}<span>${l}</span></div>`).join('');
   $("#nav").querySelectorAll('[data-view]').forEach(e=>e.onclick=()=>{view=e.dataset.view;if(view==='home')started=false;render();});
 }
@@ -79,7 +82,9 @@ function render(){
   if(view==='home')renderHome();
   else if(view==='train')renderTrain();
   else if(view==='calendar')renderCalendar();
+  else if(view==='progress')renderProgress();
   else renderMeals();
+  positionTimerBar();
 }
 
 
@@ -207,7 +212,7 @@ function renderTrain(){
     h+=`</div><button class="addset" data-add="${k}">+ Add set</button></div>`;
     card.innerHTML=h;w.appendChild(card);
   });
-  w.querySelectorAll('[data-chk]').forEach(e=>e.onclick=()=>{live[e.dataset.chk].done=!live[e.dataset.chk].done;if(navigator.vibrate)navigator.vibrate(8);saveDraft();renderTrain();});
+  w.querySelectorAll('[data-chk]').forEach(e=>e.onclick=()=>{const k=e.dataset.chk,wasDone=live[k].done;live[k].done=!wasDone;if(navigator.vibrate)navigator.vibrate(8);if(!wasDone&&live[k].done)startRestTimer();saveDraft();renderTrain();});
   w.querySelectorAll('[data-force]').forEach(e=>e.onclick=()=>{const k=e.dataset.force;live[k].force=!live[k].force;saveDraft();renderTrain();});
   w.querySelectorAll('[data-vk]').forEach(e=>e.onclick=()=>{const k=e.dataset.vk,kind=e.dataset.kind,slot=k.split("|")[2];live[k].kind=kind;live[k].sets=null;pref[plan+"|"+slot]=kind;savePref();saveDraft();renderTrain();});
   w.querySelectorAll('input[data-sk]').forEach(e=>e.oninput=()=>{const k=e.dataset.sk,i=+e.dataset.si,f=e.dataset.f;live[k].sets[i][f]=e.value;e.classList.toggle('filled',!!e.value);saveDraft();});
@@ -240,6 +245,90 @@ function finishWorkout(){
   const wasEdit=editingId!=null;editingId=null;
   toast(wasEdit?(s.name+" updated ✏️"):(s.name+" finished! 🎉"),ico.save);if(navigator.vibrate)navigator.vibrate([10,40,10]);
   if(gh&&gh.token)pushSync();goHome();
+}
+
+/* ---------- REST TIMER ---------- */
+function restDefault(){return pref.restSec||90;}
+function beepAlarm(){
+  try{
+    if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    if(audioCtx.state==='suspended')audioCtx.resume();
+    const t0=audioCtx.currentTime;
+    [0,0.18].forEach(off=>{
+      const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+      o.type='sine';o.frequency.value=880;
+      g.gain.setValueAtTime(0.0001,t0+off);
+      g.gain.exponentialRampToValueAtTime(0.3,t0+off+0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001,t0+off+0.15);
+      o.connect(g);g.connect(audioCtx.destination);
+      o.start(t0+off);o.stop(t0+off+0.17);
+    });
+  }catch(e){}
+  if(navigator.vibrate)navigator.vibrate([200,100,200]);
+}
+function startRestTimer(sec){
+  try{if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume();}catch(e){}
+  if(restTimer){clearInterval(restTimer.iv);clearTimeout(restTimer.hideT);}
+  const total=sec||restDefault();
+  restTimer={deadline:Date.now()+total*1000,total,iv:null,hideT:null,done:false};
+  restTimer.iv=setInterval(tickRestTimer,250);
+  renderRestTimer();
+}
+function tickRestTimer(){
+  if(!restTimer)return;
+  const rem=Math.max(0,Math.round((restTimer.deadline-Date.now())/1000));
+  if(rem<=0&&!restTimer.done){
+    restTimer.done=true;
+    clearInterval(restTimer.iv);restTimer.iv=null;
+    beepAlarm();
+    renderRestTimer();
+    restTimer.hideT=setTimeout(hideRestTimer,2500);
+    return;
+  }
+  renderRestTimer();
+}
+function adjustRestTimer(delta){
+  if(!restTimer)return;
+  restTimer.deadline+=delta*1000;
+  const remNow=Math.round((restTimer.deadline-Date.now())/1000);
+  if(remNow<0)restTimer.deadline=Date.now();
+  if(restTimer.done&&remNow>0){
+    restTimer.done=false;clearTimeout(restTimer.hideT);
+    restTimer.iv=setInterval(tickRestTimer,250);
+  }
+  renderRestTimer();
+}
+function hideRestTimer(){
+  if(restTimer){clearInterval(restTimer.iv);clearTimeout(restTimer.hideT);}
+  restTimer=null;
+  const bar=$("#resttimer");if(bar){bar.classList.remove('show');bar.innerHTML='';}
+}
+function fmtMMSS(s){const m=Math.floor(s/60),ss=s%60;return `${m}:${String(ss).padStart(2,'0')}`;}
+function renderRestTimer(){
+  const bar=$("#resttimer");if(!bar||!restTimer)return;
+  const rem=Math.max(0,Math.round((restTimer.deadline-Date.now())/1000));
+  bar.classList.add('show');
+  bar.innerHTML=`<div class="rt-time ${restTimer.done?'rt-done':''}">${restTimer.done?'Rest done 💪':fmtMMSS(rem)}</div>
+    <div class="rt-btns">
+      <button class="rt-btn" data-rt="-15">−15</button>
+      <button class="rt-btn" data-rt="+15">+15</button>
+      <button class="rt-btn rt-skip" data-rt="skip">Skip</button>
+    </div>`;
+  bar.querySelectorAll('[data-rt]').forEach(b=>b.onclick=()=>{
+    const a=b.dataset.rt;
+    if(a==='skip')hideRestTimer();else adjustRestTimer(parseInt(a));
+  });
+  positionTimerBar();
+}
+function positionTimerBar(){
+  const bar=$("#resttimer");if(!bar)return;
+  const dock=$("#dock");
+  if(dock&&!dock.classList.contains('hide')){
+    const r=dock.getBoundingClientRect();
+    bar.style.bottom=Math.round(window.innerHeight-r.top+8)+"px";
+  }else{
+    bar.style.bottom="calc(78px + env(safe-area-inset-bottom))";
+  }
 }
 
 /* ---------- CALENDAR ---------- */
@@ -369,6 +458,76 @@ function renderMeals(){
   w.innerHTML=h;
 }
 
+/* ---------- PROGRESS ---------- */
+function allExerciseNames(){
+  const set=new Set();
+  log().forEach(e=>{if(e.type)return;(e.slots||[]).forEach(s=>{
+    if((s.sets||[]).some(x=>x.w!==""&&x.w!=null&&!isNaN(parseFloat(x.w))&&parseFloat(x.w)>0))set.add(s.slot);
+  });});
+  return Array.from(set).sort();
+}
+function exerciseSeries(name){
+  const pts=[];
+  log().forEach(e=>{
+    if(e.type)return;
+    (e.slots||[]).forEach(s=>{
+      if(s.slot!==name)return;
+      const ws=(s.sets||[]).map(x=>parseFloat(x.w)).filter(n=>!isNaN(n)&&n>0);
+      if(!ws.length)return;
+      pts.push({date:e.date,top:Math.max(...ws)});
+    });
+  });
+  pts.sort((a,b)=>new Date(a.date)-new Date(b.date));
+  return pts;
+}
+function renderProgress(){
+  const w=$("#wrap");
+  const names=allExerciseNames();
+  if(!names.length){
+    w.innerHTML=`<div class="progress-view"><div class="sec-label">Progress</div><div class="empty">${ico.empty}<br>No weight logged yet.<br>Finish a workout with kg × reps to see progress here.</div></div>`;
+    return;
+  }
+  if(!progExercise||!names.includes(progExercise))progExercise=names[0];
+  const series=exerciseSeries(progExercise);
+  let h=`<div class="progress-view"><div class="sec-label">Progress</div>
+    <select id="prog-ex" class="prog-select">${names.map(n=>`<option value="${n}" ${n===progExercise?'selected':''}>${n}</option>`).join('')}</select>`;
+  h+=renderProgressChart(series,progExercise);
+  h+=`</div>`;
+  w.innerHTML=h;
+  w.querySelector('#prog-ex').onchange=e=>{progExercise=e.target.value;renderProgress();};
+}
+function renderProgressChart(series,name){
+  if(!series.length)return `<div class="empty">${ico.empty}<br>No weight logged for ${name} yet.</div>`;
+  const last=series[series.length-1].top;
+  const prev=series.length>1?series[series.length-2].top:null;
+  const delta=prev!=null?+(last-prev).toFixed(1):null;
+  const best=Math.max(...series.map(p=>p.top));
+  const maxV=best*1.15||1;
+  const W=320,H=160,pad=8;
+  const n=series.length;
+  const slot=(W-pad*2)/n,bw=Math.max(6,slot-6);
+  let bars='';
+  series.forEach((p,i)=>{
+    const x=pad+i*slot;
+    const bh=Math.max(2,(p.top/maxV)*(H-30));
+    const y=H-20-bh;
+    const isLast=i===n-1;
+    bars+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" rx="3" fill="${isLast?'var(--acc)':'var(--surf3)'}"></rect>`;
+    if(i===0||i===n-1||n<=6){
+      bars+=`<text x="${(x+bw/2).toFixed(1)}" y="${H-6}" font-size="9" text-anchor="middle" fill="var(--mut)">${p.top}</text>`;
+    }
+  });
+  const dateLabel=d=>new Date(d).toLocaleDateString(undefined,{month:'short',day:'numeric'});
+  let h=`<div class="prog-stats">
+    <div class="pstat"><div class="pv">${best}kg</div><div class="pl">PR best</div></div>
+    <div class="pstat"><div class="pv">${last}kg</div><div class="pl">last top set</div></div>
+    <div class="pstat"><div class="pv ${delta==null?'':delta>0?'up':delta<0?'down':''}">${delta==null?'—':(delta>0?'+':'')+delta+'kg'}</div><div class="pl">vs last time</div></div>
+  </div>`;
+  h+=`<div class="prog-chart"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="${name} top set progress">${bars}</svg></div>`;
+  h+=`<div class="prog-sub">${series.length} session${series.length!==1?'s':''} · ${dateLabel(series[0].date)} → ${dateLabel(series[series.length-1].date)}</div>`;
+  return h;
+}
+
 /* ---------- History / Settings / Sync (unchanged logic) ---------- */
 function showHistory(){
   const l=log().slice().reverse();
@@ -396,8 +555,10 @@ function showSettings(){
   h+=`<button class="btn acc" onclick="saveGh()">Save & Sync now</button>`;
   h+=`<button class="btn sec" onclick="pullSync(true)" style="margin-top:8px">⬇︎ Pull from GitHub</button>`;
   if(gh&&gh.token)h+=`<button class="btn sec" onclick="disconnectGh()" style="margin-top:8px;color:var(--danger)">Disconnect</button>`;
+  h+=`<div class="field" style="margin-top:16px"><label>Rest timer default (seconds)</label><input id="rest-default" inputmode="numeric" value="${pref.restSec||90}"></div>`;
   h+=`<button class="btn sec" onclick="hideModal()" style="margin-top:8px">Close</button>`;
   openSheet(h);
+  const rd=$("#rest-default");if(rd)rd.oninput=()=>{const v=parseInt(rd.value);pref.restSec=(v>0?v:90);savePref();};
 }
 function saveGh(){const repo=$("#gh-repo").value.replace(/\s+/g,''),token=$("#gh-token").value.replace(/\s+/g,'');
   if(!repo||!token){toast("Fill both fields");return;}gh={repo,token};localStorage.setItem(LS_GH,JSON.stringify(gh));toast("Saved — syncing…");mergeSync();}
