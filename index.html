@@ -29,7 +29,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--ink);font-feature-
   -webkit-font-smoothing:antialiased;padding-bottom:calc(150px + env(safe-area-inset-bottom));overscroll-behavior-y:none}
 header{position:sticky;top:0;z-index:50;background:rgba(10,11,14,.82);backdrop-filter:blur(18px) saturate(1.4);
   -webkit-backdrop-filter:blur(18px) saturate(1.4);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top)}
-.hbar{padding:14px 18px 0;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.hbar{padding:11px 18px 0;display:flex;align-items:center;justify-content:space-between;gap:10px}
 .brand{display:flex;align-items:center;gap:10px;min-width:0}
 .logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--acc),var(--acc-d));
   display:flex;align-items:center;justify-content:center;flex:none;box-shadow:0 4px 14px rgba(198,242,78,.28)}
@@ -43,27 +43,27 @@ header{position:sticky;top:0;z-index:50;background:rgba(10,11,14,.82);backdrop-f
 .iconbtn .dot{position:absolute;width:8px;height:8px;border-radius:50%;background:var(--warn);top:6px;right:6px;border:2px solid var(--bg)}
 
 /* Plan switcher */
-.planrow{display:flex;gap:8px;padding:12px 18px 0}
-.planchip{display:flex;align-items:center;gap:7px;padding:8px 14px;border-radius:999px;background:var(--surf);
+.planrow{display:flex;gap:8px;padding:10px 18px 0}
+.planchip{display:flex;align-items:center;gap:6px;padding:7px 13px;border-radius:999px;background:var(--surf);
   border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--mut);cursor:pointer;transition:.18s}
 .planchip.active{background:var(--acc);color:var(--acc-ink);border-color:var(--acc);box-shadow:0 3px 12px rgba(198,242,78,.25)}
 .planchip .pi{font-size:15px}
 
 /* Day cards (horizontal scroll) */
-.tabs{display:flex;gap:10px;padding:4px 18px 14px;overflow-x:auto;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.tabs{display:flex;gap:9px;padding:10px 18px 10px;overflow-x:auto;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
-.daycard{flex:0 0 auto;min-width:132px;scroll-snap-align:start;padding:13px 15px;border-radius:16px;background:var(--surf);
+.daycard{flex:0 0 auto;min-width:130px;scroll-snap-align:start;padding:10px 14px;border-radius:16px;background:var(--surf);
   border:1px solid var(--line);cursor:pointer;transition:.18s cubic-bezier(.2,.7,.3,1);position:relative;overflow:hidden}
 .daycard .dck{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--mut);display:flex;align-items:center;gap:5px}
-.daycard .dcn{font-size:16px;font-weight:600;letter-spacing:-.3px;margin-top:5px;color:var(--ink2);line-height:1.15}
-.daycard .dcm{font-size:11px;color:var(--mut);margin-top:3px;line-height:1.3}
+.daycard .dcn{font-size:15px;font-weight:600;letter-spacing:-.3px;margin-top:3px;color:var(--ink2);line-height:1.15}
+.daycard .dcm{font-size:10.5px;color:var(--mut);margin-top:2px;line-height:1.25}
 .daycard .dcbar{position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:4px 0 0 4px;opacity:.55}
 .daycard.active{background:var(--surf2);border-color:var(--line2);transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.3)}
 .daycard.active .dcn{color:var(--ink)}
 .daycard.active .dcbar{opacity:1;width:5px}
 .daycard.active .dck{color:var(--ink2)}
-.prog{margin:0 18px 14px;display:flex;align-items:center;gap:12px;background:var(--surf);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
-.ring{--p:0;width:44px;height:44px;border-radius:50%;flex:none;background:conic-gradient(var(--acc) calc(var(--p)*1%),rgba(255,255,255,.08) 0);display:flex;align-items:center;justify-content:center;position:relative}
+.prog{margin:0 14px 12px;display:flex;align-items:center;gap:11px;background:var(--surf);border:1px solid var(--line);border-radius:var(--r);padding:9px 13px}
+.ring{--p:0;width:38px;height:38px;border-radius:50%;flex:none;background:conic-gradient(var(--acc) calc(var(--p)*1%),rgba(255,255,255,.08) 0);display:flex;align-items:center;justify-content:center;position:relative}
 .ring::before{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--surf)}
 .ring b{position:relative;font-size:12px;font-weight:700}
 .prog .pl{font-size:13px;font-weight:600}.prog .ps{font-size:12px;color:var(--mut);margin-top:2px}
@@ -292,7 +292,7 @@ function renderTrain(){
   renderTabs();
   const s=P().sessions[cur],p=progress(),w=$("#wrap");
   let html=`<div class="prog"><div class="ring" style="--p:${p.pct}"><b>${p.pct}%</b></div>
-    <div style="flex:1"><div class="pl">${p.done} of ${p.total} done</div><div class="ps">${P().icon} ${P().label} · ${s.emoji} ${s.name} · ${s.muscles}</div></div></div>`;
+    <div style="flex:1"><div class="pl">${s.name} — ${p.done}/${p.total} done</div><div class="ps">${P().icon} ${P().label} · ${s.muscles}</div></div></div>`;
   w.innerHTML=html;
   s.slots.forEach((sl,i)=>{
     const [slot,scheme,force]=sl,k=keyOf(slot);
