@@ -197,6 +197,19 @@ header{position:sticky;top:0;z-index:50;background:rgba(10,11,14,.82);backdrop-f
 .wk .wv{font-size:22px;font-weight:700;letter-spacing:-.5px}.wk .wv.acc{color:var(--acc)}
 .wk .wl{font-size:10.5px;color:var(--mut);margin-top:2px}
 
+
+/* Resume / continue card */
+.resume{display:flex;align-items:center;gap:14px;background:linear-gradient(120deg,rgba(198,242,78,.14),var(--surf));
+  border:1px solid rgba(198,242,78,.35);border-radius:16px;padding:15px 16px;margin-bottom:12px;cursor:pointer;position:relative;overflow:hidden;transition:.15s}
+.resume:active{transform:scale(.985)}
+.resume .rbar{position:absolute;left:0;top:0;bottom:0;width:5px}
+.resume .rico{width:42px;height:42px;border-radius:12px;background:var(--surf2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:21px;flex:none}
+.resume .rinfo{flex:1;min-width:0}
+.resume .rname{font-size:16px;font-weight:600;letter-spacing:-.3px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.resume .rtag{font-size:10px;font-weight:600;color:var(--mut);background:var(--surf2);border:1px solid var(--line);padding:2px 7px;border-radius:6px}
+.resume .rmus{font-size:12px;color:var(--acc-d);margin-top:3px;font-weight:500}
+.resume .rplay{width:34px;height:34px;border-radius:50%;background:var(--acc);color:var(--acc-ink);display:flex;align-items:center;justify-content:center;font-size:13px;flex:none;box-shadow:0 3px 10px rgba(198,242,78,.3)}
+
 /* Train slim header (shown only in train view) */
 .trainbar{display:none;align-items:center;gap:12px;padding:10px 16px 12px}
 .trainbar.show{display:flex}
@@ -342,6 +355,23 @@ function render(){
 
 
 /* ---------- HOME (dashboard) ---------- */
+function inProgressSessions(){
+  // returns [{plan,day,done,total}] for sessions with any logged data in draft
+  const map={};
+  for(const key in live){
+    const parts=key.split("|");if(parts.length<3)continue;
+    const pk=parts[0],dk=parts[1];const st=live[key];
+    const hasData=(st&&((st.sets&&st.sets.some(x=>x&&(x.w||x.r)))||st.done));
+    if(!hasData)continue;
+    if(!DATA.plans[pk]||!DATA.plans[pk].sessions[dk])continue;
+    const id=pk+"|"+dk;
+    if(!map[id])map[id]={plan:pk,day:dk,done:0,total:DATA.plans[pk].sessions[dk].slots.length};
+    if(st.done)map[id].done++;
+    else if(st.sets&&st.sets.some(x=>x&&(x.w||x.r)))map[id].done++; // count started-with-values as progress
+  }
+  return Object.values(map);
+}
+
 function weekCount(){
   const l=log(),now=new Date();const day=(now.getDay()+6)%7;
   const monday=new Date(now);monday.setHours(0,0,0,0);monday.setDate(now.getDate()-day);
@@ -352,6 +382,17 @@ function renderHome(){
   const w=$("#wrap");
   const wc=weekCount(),total=log().length;
   let h=`<div class="dash"><div class="dash-h">Let's train 💪</div><div class="dash-sub">Pick your mode, then today's focus.</div>`;
+  // resume cards
+  const ip=inProgressSessions();
+  if(ip.length){
+    h+=`<div class="sec-label">▶ Continue where you left off</div>`;
+    ip.forEach(x=>{const s=DATA.plans[x.plan].sessions[x.day],col=dayColor(x.plan,x.day),pl=DATA.plans[x.plan];
+      h+=`<div class="resume" data-rp="${x.plan}" data-rd="${x.day}"><div class="rbar" style="background:${col}"></div>
+        <div class="rico">${s.emoji}</div>
+        <div class="rinfo"><div class="rname">${s.name} <span class="rtag">${pl.icon} ${pl.label}</span></div>
+        <div class="rmus">${x.done} of ${x.total} done · tap to resume</div></div>
+        <div class="rplay">▶</div></div>`;});
+  }
   // week stats
   h+=`<div class="week-strip">
     <div class="wk"><div class="wv acc">${wc}</div><div class="wl">this week</div></div>
@@ -382,6 +423,7 @@ function renderHome(){
   w.innerHTML=h;
   w.querySelectorAll('[data-plan]').forEach(e=>e.onclick=()=>{plan=e.dataset.plan;localStorage.setItem(LS_PLAN,plan);cur=null;renderHome();});
   w.querySelectorAll('[data-day]').forEach(e=>e.onclick=()=>{cur=e.dataset.day;started=true;view='train';window.scrollTo(0,0);render();});
+  w.querySelectorAll('[data-rp]').forEach(e=>e.onclick=()=>{plan=e.dataset.rp;localStorage.setItem(LS_PLAN,plan);cur=e.dataset.rd;started=true;view='train';window.scrollTo(0,0);render();});
 }
 function streakAll(){const l=log();const byDay={};l.forEach(e=>{byDay[e.date.slice(0,10)]=1;});
   let s=0,d=new Date();for(;;){const k=d.toISOString().slice(0,10);if(byDay[k]){s++;d.setDate(d.getDate()-1);}else{if(k===new Date().toISOString().slice(0,10)){d.setDate(d.getDate()-1);continue;}break;}}return s;}
