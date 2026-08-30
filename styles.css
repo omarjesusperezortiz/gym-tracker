@@ -212,13 +212,21 @@ header{position:sticky;top:0;z-index:50;background:rgba(10,11,14,.82);backdrop-f
 .trainbar .tinfo{flex:1;min-width:0}
 .trainbar .tt{font-size:18px;font-weight:600;letter-spacing:-.4px;display:flex;align-items:center;gap:8px}
 .trainbar .tm{font-size:12px;color:var(--mut);margin-top:1px}
+.editbadge{display:inline-flex;align-items:center;min-height:32px;padding:4px 9px;margin:-4px 2px -4px 0;
+  border-radius:8px;background:rgba(255,184,77,.12);border:1px solid rgba(255,184,77,.3);
+  color:var(--warn);font-weight:600;font-size:11px;cursor:pointer}
+.editbadge:active{transform:scale(.94)}
+.resume .rtag.edit{background:rgba(255,184,77,.14);border-color:rgba(255,184,77,.3);color:var(--warn)}
 .trainbar .tprog{font-size:12px;font-weight:600;color:var(--acc);font-family:var(--mono);background:var(--surf);border:1px solid var(--line);padding:5px 10px;border-radius:10px;flex:none}
 
 .modal{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);display:none;align-items:flex-end}
 .modal.show{display:flex;animation:fade .2s}@keyframes fade{from{opacity:0}}
 .sheet{background:var(--panel);border-radius:22px 22px 0 0;width:100%;max-height:86vh;overflow:auto;padding:20px 18px calc(30px + env(safe-area-inset-bottom));border-top:1px solid var(--line2);animation:slideup .28s cubic-bezier(.2,.8,.2,1)}
 @keyframes slideup{from{transform:translateY(30px)}}
-.grab{width:38px;height:4px;border-radius:2px;background:var(--surf3);margin:0 auto 16px}
+.grab{width:38px;height:4px;border-radius:2px;background:var(--surf3);margin:0 auto 16px;position:relative;cursor:grab;touch-action:none}
+/* invisible >=44px hit area around the little handle, for drag-to-dismiss */
+.grab::after{content:"";position:absolute;left:-60px;right:-60px;top:-22px;bottom:-22px}
+.sheet{will-change:transform}
 .sheet h2{margin:0 0 3px;font-size:18px;letter-spacing:-.4px}.sh-sub{color:var(--mut);font-size:12.5px;margin-bottom:14px}
 .hentry{background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px}
 .hentry .hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}

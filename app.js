@@ -2,8 +2,15 @@
 // DATA is loaded from data.js
 const LS_LOG="obt_log_v2", LS_PREF="obt_pref_v2", LS_GH="obt_gh_v1", LS_PLAN="obt_plan_v1", LS_DRAFT="obt_draft_v1";
 let plan=localStorage.getItem(LS_PLAN)||"gym";
-let cur=null, view="home", started=false, editingId=null;
+let cur=null, view="home", started=false, editingId=null, editingKey=null;
 let live=JSON.parse(localStorage.getItem(LS_DRAFT)||"{}"), calMonth=new Date();
+// The draft carries a reserved __meta entry so an in-progress EDIT survives reloads
+// and navigating around (Home, resume card). It is stripped out of `live` on load.
+(function restoreEditMeta(){
+  const m=live.__meta;
+  delete live.__meta;
+  if(m&&typeof m==='object'&&m.editingId!=null){editingId=m.editingId;editingKey=m.editingKey||null;}
+})();
 let pref=JSON.parse(localStorage.getItem(LS_PREF)||"{}");
 let gh=JSON.parse(localStorage.getItem(LS_GH)||"null");
 let syncState="off";
@@ -62,7 +69,7 @@ function renderTabs(){
     const s=P().sessions[k],col=dayColor(plan,k);
     const d=document.createElement('div');d.className="daycard"+(k===cur?" active":"");d.dataset.k=k;
     d.innerHTML=`<div class="dcbar" style="background:${col}"></div><div class="dck">${s.emoji} Day ${i+1}</div><div class="dcn">${s.name}</div><div class="dcm">${s.muscles}</div>`;
-    d.onclick=()=>{cur=k;renderTrain();const el=t.querySelector('.daycard.active');if(el)el.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});};
+    d.onclick=()=>{cur=k;syncEditContext();renderTrain();const el=t.querySelector('.daycard.active');if(el)el.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});};
     t.appendChild(d);
   });
   // scroll active into view
@@ -119,10 +126,13 @@ function renderHome(){
   if(ip.length){
     h+=`<div class="sec-label">▶ Continue where you left off</div>`;
     ip.forEach(x=>{const s=DATA.plans[x.plan].sessions[x.day],col=dayColor(x.plan,x.day),pl=DATA.plans[x.plan];
+      const isEd=editingId!=null&&editingKey===x.plan+"|"+x.day;
+      const edEntry=isEd?log().find(e=>String(e.id)===String(editingId)):null;
+      const edWhen=edEntry?new Date(edEntry.date).toLocaleDateString(undefined,{month:'short',day:'numeric'}):'';
       h+=`<div class="resume" data-rp="${x.plan}" data-rd="${x.day}"><div class="rbar" style="background:${col}"></div>
         <div class="rico">${s.emoji}</div>
-        <div class="rinfo"><div class="rname">${s.name} <span class="rtag">${pl.icon} ${pl.label}</span></div>
-        <div class="rmus">${x.done} of ${x.total} done · tap to resume</div></div>
+        <div class="rinfo"><div class="rname">${s.name} <span class="rtag">${pl.icon} ${pl.label}</span>${isEd?`<span class="rtag edit">✏️ editing${edWhen?" "+edWhen:""}</span>`:''}</div>
+        <div class="rmus">${x.done} of ${x.total} done · tap to ${isEd?'resume editing':'resume'}</div></div>
         <div class="rplay">▶</div></div>`;});
   }
   // week stats
@@ -154,8 +164,8 @@ function renderHome(){
   h+=`</div>`;
   w.innerHTML=h;
   w.querySelectorAll('[data-plan]').forEach(e=>e.onclick=()=>{plan=e.dataset.plan;localStorage.setItem(LS_PLAN,plan);cur=null;renderHome();});
-  w.querySelectorAll('[data-day]').forEach(e=>e.onclick=()=>{cur=e.dataset.day;started=true;view='train';window.scrollTo(0,0);render();});
-  w.querySelectorAll('[data-rp]').forEach(e=>e.onclick=()=>{plan=e.dataset.rp;localStorage.setItem(LS_PLAN,plan);cur=e.dataset.rd;started=true;view='train';window.scrollTo(0,0);render();});
+  w.querySelectorAll('[data-day]').forEach(e=>e.onclick=()=>{cur=e.dataset.day;syncEditContext();started=true;view='train';window.scrollTo(0,0);render();});
+  w.querySelectorAll('[data-rp]').forEach(e=>e.onclick=()=>{plan=e.dataset.rp;localStorage.setItem(LS_PLAN,plan);cur=e.dataset.rd;syncEditContext();started=true;view='train';window.scrollTo(0,0);render();});
 }
 function streakAll(){const l=log();const byDay={};l.forEach(e=>{byDay[e.date.slice(0,10)]=1;});
   let s=0,d=new Date();for(;;){const k=d.toISOString().slice(0,10);if(byDay[k]){s++;d.setDate(d.getDate()-1);}else{if(k===new Date().toISOString().slice(0,10)){d.setDate(d.getDate()-1);continue;}break;}}return s;}
@@ -163,11 +173,17 @@ function renderTrainbar(){
   if(view!=='train'){return;}
   const keys=Object.keys(P().sessions);if(!cur||!keys.includes(cur))cur=keys[0];
   const s=P().sessions[cur],p=progress();
+  const ed=isEditingCurrent();
+  const edDate=ed?(log().find(e=>String(e.id)===String(editingId))||{}).date:null;
+  const edLabel=edDate?new Date(edDate).toLocaleDateString(undefined,{month:'short',day:'numeric'}):'';
   $("#trainbar").innerHTML=`<div class="backbtn" onclick="goHome()">${ico.back}</div>
-    <div class="tinfo"><div class="tt">${s.emoji} ${s.name}</div><div class="tm">${editingId!=null?"✏️ editing · ":""}${P().icon} ${P().label} · ${s.muscles}</div></div>
+    <div class="tinfo"><div class="tt">${s.emoji} ${s.name}</div><div class="tm">${ed?`<span class="editbadge" onclick="cancelEdit(event)">✏️ editing${edLabel?" "+edLabel:""} · exit</span> `:""}${P().icon} ${P().label} · ${s.muscles}</div></div>
     <div class="tprog">${p.done}/${p.total}</div>`;
 }
-function goHome(){view='home';started=false;editingId=null;window.scrollTo(0,0);render();}
+// NOTE: goHome must NOT clear editingId — an in-progress edit has to survive a look
+// around the dashboard. It is cleared on finish (completeFinish), on cancelEdit, or
+// when a different session is opened (syncEditContext).
+function goHome(){view='home';started=false;window.scrollTo(0,0);render();}
 
 /* ---------- TRAIN ---------- */
 function renderTrain(){
@@ -218,10 +234,29 @@ function renderTrain(){
 }
 function firstKind(slot){const v=P().variations[slot];return v?Object.keys(v)[0]:"bw";}
 
-function saveDraft(){localStorage.setItem(LS_DRAFT,JSON.stringify(live));}
+function saveDraft(){
+  const out={...live};
+  if(editingId!=null)out.__meta={editingId,editingKey};
+  localStorage.setItem(LS_DRAFT,JSON.stringify(out));
+}
+/* ---------- edit context (survives navigation + reloads via the draft) ---------- */
+function setEditContext(id,pk,sk){editingId=id;editingKey=pk+"|"+sk;saveDraft();}
+function clearEditContext(){editingId=null;editingKey=null;saveDraft();}
+function isEditingCurrent(){return editingId!=null&&editingKey===plan+"|"+cur;}
+// Opening a session drops a stale edit context only if it's a DIFFERENT session.
+function syncEditContext(){if(editingId!=null&&editingKey!==plan+"|"+cur)clearEditContext();}
+function cancelEdit(ev){
+  if(ev&&ev.stopPropagation)ev.stopPropagation();
+  if(editingId==null)return;
+  const s=P().sessions[cur];
+  if(s)s.slots.forEach(sl=>delete live[keyOf(sl[0])]);
+  clearEditContext();
+  toast("Edit discarded");
+  goHome();
+}
 function saveProgress(){
   saveDraft();
-  toast("Progress saved 💾");
+  toast(isEditingCurrent()?"Edit saved 💾":"Progress saved 💾");
   if(navigator.vibrate)navigator.vibrate(8);
 }
 function finishWorkout(){
@@ -230,7 +265,9 @@ function finishWorkout(){
     const sets=(st.sets||[]).filter(x=>x.w!==""||x.r!=="").map(x=>({w:x.w,r:x.r}));
     if(sets.length||st.done)slots.push({slot,kind:st.kind,done:st.done,force:!!st.force,sets});});
   if(!slots.length){toast("Log something first 💪");return;}
-  if(editingId!=null){completeFinish(slots,s,editingId);return;}
+  // Editing an existing entry (incl. a PAST day) always updates it in place — never
+  // creates a today entry. Only applies when the edit context matches this session.
+  if(isEditingCurrent()){completeFinish(slots,s,editingId);return;}
   const today=new Date().toISOString().slice(0,10);
   const dup=log().find(e=>!e.type&&e.plan===plan&&e.sess===cur&&(e.date||"").slice(0,10)===today);
   if(dup)confirmDupeFinish(dup,slots,s);
@@ -247,16 +284,18 @@ function confirmDupeFinish(dup,slots,s){
 }
 function completeFinish(slots,s,targetId){
   const l=log();
+  let updated=false;
   if(targetId!=null){
     const idx=l.findIndex(e=>String(e.id)===String(targetId));
-    if(idx>=0){l[idx]={...l[idx],plan,sess:cur,name:s.name,slots};}
+    // Keep the ORIGINAL id and date — editing a past day must not restamp it to today.
+    if(idx>=0){l[idx]={...l[idx],id:l[idx].id,date:l[idx].date,plan,sess:cur,name:s.name,slots};updated=true;}
     else{l.push({id:Date.now(),date:new Date().toISOString(),plan,sess:cur,name:s.name,slots});}
   }else{
     l.push({id:Date.now(),date:new Date().toISOString(),plan,sess:cur,name:s.name,slots});
   }
   saveLog(l);
-  s.slots.forEach(sl=>delete live[keyOf(sl[0])]);saveDraft();
-  const wasUpdate=targetId!=null;editingId=null;
+  s.slots.forEach(sl=>delete live[keyOf(sl[0])]);
+  const wasUpdate=updated;clearEditContext();
   toast(wasUpdate?(s.name+" updated ✏️"):(s.name+" finished! 🎉"),ico.save);if(navigator.vibrate)navigator.vibrate([10,40,10]);
   if(gh&&gh.token)pushSync();goHome();
 }
@@ -355,7 +394,8 @@ function editLogEntry(id){
   hideModal();
   const l=log();const entry=l.find(e=>String(e.id)===String(id));
   if(!entry){toast("Couldn't open that workout");return;}
-  plan=entry.plan;localStorage.setItem(LS_PLAN,plan);cur=entry.sess;editingId=entry.id;started=true;
+  plan=entry.plan;localStorage.setItem(LS_PLAN,plan);cur=entry.sess;started=true;
+  setEditContext(entry.id,entry.plan,entry.sess);
   (entry.slots||[]).forEach(s=>{
     live[plan+"|"+cur+"|"+s.slot]={kind:s.kind,done:!!s.done,force:!!s.force,
       sets:(s.sets||[]).map(x=>({w:x.w||"",r:x.r||"",last:""}))};
@@ -524,8 +564,61 @@ async function pullSync(manual){if(!gh||!gh.token){if(manual)toast("Connect GitH
   catch(e){syncState="err";if(manual)toast("Pull failed: "+e.message);}refreshSyncUI();}
 function refreshSyncUI(){const b=$("#hdr-sync");if(b)b.style.display=(syncState==='err')?'block':'none';}
 function exportData(){const blob=new Blob([JSON.stringify({log:log(),pref},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='gym-tracker-backup.json';a.click();}
-function openSheet(h){$("#sheet").innerHTML=h;$("#modal").classList.add('show');}
-function hideModal(){$("#modal").classList.remove('show');}
+function openSheet(h){
+  const sh=$("#sheet");
+  sh.innerHTML=h;
+  sh.style.transition='';sh.style.transform='';   // reset any leftover drag offset
+  $("#modal").classList.add('show');
+  initSheetDrag();
+}
+function hideModal(){
+  const sh=$("#sheet");
+  if(sh){sh.style.transition='';sh.style.transform='';}
+  $("#modal").classList.remove('show');
+}
+/* ---------- swipe-down-to-dismiss for the bottom sheet ---------- */
+let sheetDrag=null;
+function initSheetDrag(){
+  const sh=$("#sheet");
+  if(!sh||sh._dragInit)return;
+  sh._dragInit=true;
+  const CLOSE_PX=100, FLICK_PX=40, FLICK_MS=250, SLOP=6;
+  sh.addEventListener('touchstart',e=>{
+    if(e.touches.length!==1){sheetDrag=null;return;}
+    const onGrab=!!(e.target&&e.target.closest&&e.target.closest('.grab'));
+    // only start a dismiss-drag from the handle, or when content is scrolled to the top
+    if(!onGrab&&sh.scrollTop>0){sheetDrag=null;return;}
+    sheetDrag={y0:e.touches[0].clientY,dy:0,onGrab,active:false,t0:Date.now()};
+    sh.style.transition='none';
+  },{passive:true});
+  sh.addEventListener('touchmove',e=>{
+    if(!sheetDrag||e.touches.length!==1)return;
+    const dy=e.touches[0].clientY-sheetDrag.y0;
+    if(!sheetDrag.active){
+      if(dy>SLOP&&(sheetDrag.onGrab||sh.scrollTop<=0))sheetDrag.active=true;
+      else if(dy<-SLOP){sheetDrag=null;return;}   // upward → let it scroll normally
+      else return;
+    }
+    if(e.cancelable)e.preventDefault();           // non-passive only while dragging
+    sheetDrag.dy=dy>0?dy:dy*0.25;                 // resist upward past the open position
+    sh.style.transform=`translateY(${Math.max(sheetDrag.dy,-40).toFixed(1)}px)`;
+  },{passive:false});
+  const endDrag=()=>{
+    if(!sheetDrag)return;
+    const dy=sheetDrag.dy,fast=(Date.now()-sheetDrag.t0)<FLICK_MS&&dy>FLICK_PX;
+    sheetDrag=null;
+    sh.style.transition='transform .28s cubic-bezier(.2,.8,.2,1)';
+    if(dy>CLOSE_PX||fast){
+      sh.style.transform='translateY(100%)';
+      setTimeout(hideModal,220);
+    }else{
+      sh.style.transform='translateY(0)';
+    }
+  };
+  sh.addEventListener('touchend',endDrag,{passive:true});
+  sh.addEventListener('touchcancel',endDrag,{passive:true});
+}
 $("#modal").onclick=e=>{if(e.target.id==='modal')hideModal();};
+initSheetDrag();
 render();
 if(gh&&gh.token){syncState="ok";pullSync(false);}
