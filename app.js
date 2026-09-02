@@ -228,7 +228,11 @@ function renderTrain(){
   });
   w.querySelectorAll('[data-chk]').forEach(e=>e.onclick=()=>{live[e.dataset.chk].done=!live[e.dataset.chk].done;if(navigator.vibrate)navigator.vibrate(8);saveDraft();renderTrain();});
   w.querySelectorAll('[data-force]').forEach(e=>e.onclick=()=>{const k=e.dataset.force;live[k].force=!live[k].force;saveDraft();renderTrain();});
-  w.querySelectorAll('[data-vk]').forEach(e=>e.onclick=()=>{const k=e.dataset.vk,kind=e.dataset.kind,slot=k.split("|")[2];live[k].kind=kind;live[k].sets=null;pref[plan+"|"+slot]=kind;savePref();saveDraft();renderTrain();});
+  w.querySelectorAll('[data-vk]').forEach(e=>e.onclick=()=>{const k=e.dataset.vk,kind=e.dataset.kind,slot=k.split("|")[2];live[k].kind=kind;
+    const cur=live[k].sets||[];const hasInput=cur.some(x=>x&&(x.w!==""||x.r!==""));
+    if(hasInput){const lp=lastFor(slot,kind);cur.forEach((x,j)=>{x.last=lp&&lp[j]?`${lp[j].w||"–"}×${lp[j].r||"–"}`:"";});}
+    else{live[k].sets=null;}
+    pref[plan+"|"+slot]=kind;savePref();saveDraft();renderTrain();});
   w.querySelectorAll('input[data-sk]').forEach(e=>e.oninput=()=>{const k=e.dataset.sk,i=+e.dataset.si,f=e.dataset.f;live[k].sets[i][f]=e.value;e.classList.toggle('filled',!!e.value);saveDraft();});
   w.querySelectorAll('[data-add]').forEach(e=>e.onclick=()=>{live[e.dataset.add].sets.push({w:"",r:"",last:""});saveDraft();renderTrain();});
 }
