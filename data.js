@@ -326,6 +326,49 @@ const DATA = {
        ""
       ]
      ]
+    },
+    "core": {
+     "name": "Core",
+     "emoji": "🎯",
+     "group": "focused",
+     "muscles": "abs · obliques · lower back",
+     "slots": [
+      [
+       "Plank",
+       "3 × 40–60s",
+       ""
+      ],
+      [
+       "Hanging/Lying Leg Raise",
+       "3 × 12–15",
+       ""
+      ],
+      [
+       "Bicycle Crunch",
+       "3 × 20",
+       ""
+      ],
+      [
+       "Russian Twist",
+       "3 × 20",
+       ""
+      ],
+      [
+       "Side Plank",
+       "3 × 30s/side",
+       ""
+      ],
+      [
+       "Pallof Press (anti-rotation)",
+       "3 × 10/side",
+       ""
+      ],
+      [
+       "Reverse Crunch",
+       "3 × 15",
+       ""
+      ]
+     ]
     }
    },
    "variations": {
@@ -661,6 +704,75 @@ const DATA = {
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Dumbbell_Calf_Raise/0.jpg",
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Dumbbell_Calf_Raise/1.jpg"
      }
+    },
+    "Plank": {
+     "bw": {
+      "name": "Plank",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plank/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plank/1.jpg"
+     }
+    },
+    "Hanging/Lying Leg Raise": {
+     "bar": {
+      "name": "Hanging Leg Raise",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Hanging_Leg_Raise/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Hanging_Leg_Raise/1.jpg"
+     },
+     "cable": {
+      "name": "Cable Crunch",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Crunch/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Crunch/1.jpg"
+     },
+     "bw": {
+      "name": "Flat Bench Lying Leg Raise",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Flat_Bench_Lying_Leg_Raise/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Flat_Bench_Lying_Leg_Raise/1.jpg"
+     }
+    },
+    "Bicycle Crunch": {
+     "bw": {
+      "name": "Air Bike",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Air_Bike/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Air_Bike/1.jpg"
+     }
+    },
+    "Russian Twist": {
+     "db": {
+      "name": "Russian Twist",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Russian_Twist/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Russian_Twist/1.jpg"
+     },
+     "bw": {
+      "name": "Russian Twist",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Russian_Twist/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Russian_Twist/1.jpg"
+     }
+    },
+    "Side Plank": {
+     "bw": {
+      "name": "Side Bridge",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Side_Bridge/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Side_Bridge/1.jpg"
+     }
+    },
+    "Pallof Press (anti-rotation)": {
+     "cable": {
+      "name": "Pallof Press",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Pallof_Press/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Pallof_Press/1.jpg"
+     },
+     "bw": {
+      "name": "Plank",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plank/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plank/1.jpg"
+     }
+    },
+    "Reverse Crunch": {
+     "bw": {
+      "name": "Reverse Crunch",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Reverse_Crunch/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Reverse_Crunch/1.jpg"
+     }
     }
    },
    "cues": {
@@ -687,7 +799,7 @@ const DATA = {
     "Incline Dumbbell Press": "Bench ~30°, press DBs up and together.",
     "Cable Seated Lateral Raise": "Seated cable raise out to the side.",
     "Side Lateral Raise": "Raise out to shoulder height, slight bend. Light.",
-    "Plank": "Forearms down, body straight, brace, hold.",
+    "Plank": "Forearms down, body straight, brace abs, hold. Don't let hips sag.",
     "Face Pull": "Rope to face, elbows high — great for skater shoulders.",
     "Seated Bent-Over Rear Delt Raise": "Hinge seated, raise DBs out, squeeze rear delts.",
     "Barbell Shrug": "Shrug shoulders up, squeeze traps, lower.",
@@ -696,8 +808,8 @@ const DATA = {
     "Hammer Curls": "Neutral grip curl — biceps + forearm.",
     "Barbell Full Squat": "Bar on back, sit down to depth, drive up.",
     "Dumbbell Squat": "DBs at sides, squat down, stand.",
-    "Hanging Leg Raise": "Hang, raise legs with control, no swing.",
-    "Cable Crunch": "Kneel, crunch down pulling rope, contract abs.",
+    "Hanging Leg Raise": "Hang, raise legs with control, no swinging.",
+    "Cable Crunch": "Kneel, crunch down pulling rope, contract abs hard.",
     "Weighted Crunches": "Crunch holding weight on chest.",
     "Cable Crossover": "Bring handles together in front, squeeze.",
     "Dumbbell Flyes": "Wide arc, slight elbow bend, squeeze at top.",
@@ -719,7 +831,13 @@ const DATA = {
     "Stiff-Legged Dumbbell Deadlift": "Near-straight legs, hinge with DBs.",
     "Standing Barbell Calf Raise": "Rise onto toes with bar, squeeze, lower slow.",
     "Standing Dumbbell Calf Raise": "Rise onto toes with DBs, squeeze.",
-    "Cable Shoulder Press": "Press cable handles overhead from shoulder height, control down."
+    "Cable Shoulder Press": "Press cable handles overhead from shoulder height, control down.",
+    "Flat Bench Lying Leg Raise": "Lie down, raise legs with control, lower slow.",
+    "Air Bike": "Alternate elbow to opposite knee, slow and controlled.",
+    "Russian Twist": "Seated, lean back, rotate side to side. Add weight to progress.",
+    "Side Bridge": "On side, forearm down, hips up, straight line, hold.",
+    "Pallof Press": "Cable/band from the side, press straight out, resist the twist.",
+    "Reverse Crunch": "Knees up, curl hips toward chest, control down."
    }
   },
   "cal": {
@@ -1047,6 +1165,49 @@ const DATA = {
        ""
       ]
      ]
+    },
+    "core": {
+     "name": "Core",
+     "emoji": "🎯",
+     "group": "focused",
+     "muscles": "abs · obliques · lower back",
+     "slots": [
+      [
+       "Plank",
+       "3 × 40–60s",
+       ""
+      ],
+      [
+       "Hanging/Lying Leg Raise",
+       "3 × 12–15",
+       ""
+      ],
+      [
+       "Bicycle Crunch",
+       "3 × 20",
+       ""
+      ],
+      [
+       "Russian Twist",
+       "3 × 20",
+       ""
+      ],
+      [
+       "Side Plank",
+       "3 × 30s/side",
+       ""
+      ],
+      [
+       "Pallof Press (anti-rotation)",
+       "3 × 10/side",
+       ""
+      ],
+      [
+       "Reverse Crunch",
+       "3 × 15",
+       ""
+      ]
+     ]
     }
    },
    "variations": {
@@ -1217,6 +1378,55 @@ const DATA = {
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Calf_Raises/0.jpg",
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Calf_Raises/1.jpg"
      }
+    },
+    "Plank": {
+     "bw": {
+      "name": "Plank",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plank/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plank/1.jpg"
+     }
+    },
+    "Hanging/Lying Leg Raise": {
+     "bw": {
+      "name": "Flat Bench Lying Leg Raise",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Flat_Bench_Lying_Leg_Raise/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Flat_Bench_Lying_Leg_Raise/1.jpg"
+     }
+    },
+    "Bicycle Crunch": {
+     "bw": {
+      "name": "Air Bike",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Air_Bike/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Air_Bike/1.jpg"
+     }
+    },
+    "Russian Twist": {
+     "bw": {
+      "name": "Russian Twist",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Russian_Twist/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Russian_Twist/1.jpg"
+     }
+    },
+    "Side Plank": {
+     "bw": {
+      "name": "Side Bridge",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Side_Bridge/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Side_Bridge/1.jpg"
+     }
+    },
+    "Pallof Press (anti-rotation)": {
+     "bw": {
+      "name": "Plank",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plank/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plank/1.jpg"
+     }
+    },
+    "Reverse Crunch": {
+     "bw": {
+      "name": "Reverse Crunch",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Reverse_Crunch/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Reverse_Crunch/1.jpg"
+     }
     }
    },
    "cues": {
@@ -1227,14 +1437,18 @@ const DATA = {
     "Chin-Up": "Underhand pull-up — biceps + back.",
     "Bench Dips": "Hands on bench behind you, lower & press up.",
     "Side Lateral Raise": "Raise out to shoulder height, slight bend. Light.",
-    "Plank": "Forearms down, body straight, brace, hold.",
+    "Plank": "Forearms down, body straight, brace abs, hold. Don't let hips sag.",
     "Band Pull Apart": "Band at chest, pull apart, squeeze blades.",
     "Superman": "Face down, lift chest+legs, squeeze, lower.",
     "Bodyweight Squat": "Sit back and down, knees track toes, stand.",
-    "Flat Bench Lying Leg Raise": "Lie down, raise legs with control.",
+    "Flat Bench Lying Leg Raise": "Lie down, raise legs with control, lower slow.",
     "Bodyweight Walking Lunge": "Step forward, drop back knee, alternate.",
     "Butt Lift (Bridge)": "On back, drive hips up, squeeze glutes.",
-    "Standing Calf Raises": "Rise onto toes, squeeze, lower slow. On a step for range."
+    "Standing Calf Raises": "Rise onto toes, squeeze, lower slow. On a step for range.",
+    "Air Bike": "Alternate elbow to opposite knee, slow and controlled.",
+    "Russian Twist": "Seated, lean back, rotate side to side. Add weight to progress.",
+    "Side Bridge": "On side, forearm down, hips up, straight line, hold.",
+    "Reverse Crunch": "Knees up, curl hips toward chest, control down."
    }
   },
   "travel": {
@@ -1562,6 +1776,49 @@ const DATA = {
        ""
       ]
      ]
+    },
+    "core": {
+     "name": "Core",
+     "emoji": "🎯",
+     "group": "focused",
+     "muscles": "abs · obliques · lower back",
+     "slots": [
+      [
+       "Plank",
+       "3 × 40–60s",
+       ""
+      ],
+      [
+       "Hanging/Lying Leg Raise",
+       "3 × 12–15",
+       ""
+      ],
+      [
+       "Bicycle Crunch",
+       "3 × 20",
+       ""
+      ],
+      [
+       "Russian Twist",
+       "3 × 20",
+       ""
+      ],
+      [
+       "Side Plank",
+       "3 × 30s/side",
+       ""
+      ],
+      [
+       "Pallof Press (anti-rotation)",
+       "3 × 10/side",
+       ""
+      ],
+      [
+       "Reverse Crunch",
+       "3 × 15",
+       ""
+      ]
+     ]
     }
    },
    "variations": {
@@ -1732,6 +1989,55 @@ const DATA = {
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Calf_Raises/0.jpg",
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Calf_Raises/1.jpg"
      }
+    },
+    "Plank": {
+     "bw": {
+      "name": "Plank",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plank/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plank/1.jpg"
+     }
+    },
+    "Hanging/Lying Leg Raise": {
+     "bw": {
+      "name": "Flat Bench Lying Leg Raise",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Flat_Bench_Lying_Leg_Raise/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Flat_Bench_Lying_Leg_Raise/1.jpg"
+     }
+    },
+    "Bicycle Crunch": {
+     "bw": {
+      "name": "Air Bike",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Air_Bike/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Air_Bike/1.jpg"
+     }
+    },
+    "Russian Twist": {
+     "bw": {
+      "name": "Russian Twist",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Russian_Twist/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Russian_Twist/1.jpg"
+     }
+    },
+    "Side Plank": {
+     "bw": {
+      "name": "Side Bridge",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Side_Bridge/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Side_Bridge/1.jpg"
+     }
+    },
+    "Pallof Press (anti-rotation)": {
+     "bw": {
+      "name": "Plank",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plank/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plank/1.jpg"
+     }
+    },
+    "Reverse Crunch": {
+     "bw": {
+      "name": "Reverse Crunch",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Reverse_Crunch/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Reverse_Crunch/1.jpg"
+     }
     }
    },
    "cues": {
@@ -1742,14 +2048,18 @@ const DATA = {
     "Chin-Up": "Underhand pull-up — biceps + back.",
     "Bench Dips": "Hands on bench behind you, lower & press up.",
     "Side Lateral Raise": "Raise out to shoulder height, slight bend. Light.",
-    "Plank": "Forearms down, body straight, brace, hold.",
+    "Plank": "Forearms down, body straight, brace abs, hold. Don't let hips sag.",
     "Band Pull Apart": "Band at chest, pull apart, squeeze blades.",
     "Superman": "Face down, lift chest+legs, squeeze, lower.",
     "Bodyweight Squat": "Sit back and down, knees track toes, stand.",
-    "Flat Bench Lying Leg Raise": "Lie down, raise legs with control.",
+    "Flat Bench Lying Leg Raise": "Lie down, raise legs with control, lower slow.",
     "Bodyweight Walking Lunge": "Step forward, drop back knee, alternate.",
     "Butt Lift (Bridge)": "On back, drive hips up, squeeze glutes.",
-    "Standing Calf Raises": "Rise onto toes, squeeze, lower slow. On a step for range."
+    "Standing Calf Raises": "Rise onto toes, squeeze, lower slow. On a step for range.",
+    "Air Bike": "Alternate elbow to opposite knee, slow and controlled.",
+    "Russian Twist": "Seated, lean back, rotate side to side. Add weight to progress.",
+    "Side Bridge": "On side, forearm down, hips up, straight line, hold.",
+    "Reverse Crunch": "Knees up, curl hips toward chest, control down."
    }
   }
  },
