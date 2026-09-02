@@ -39,6 +39,8 @@ function saveLog(a){localStorage.setItem(LS_LOG,JSON.stringify(a));}
 function savePref(){localStorage.setItem(LS_PREF,JSON.stringify(pref));}
 function toast(m,icon){const t=$("#toast");t.innerHTML=(icon||"")+"<span>"+m+"</span>";t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1900);}
 function parseTarget(s){const m=s.match(/(\d+)\s*×/);return m?parseInt(m[1]):3;}
+function isTimeScheme(s){return /\d\s*s(\/|\b)/i.test(s||"");}
+function fmtLast(p,weighted,timeBased){if(!p)return"";if(!weighted)return timeBased?`${p.r||"–"}s`:`${p.r||"–"}`;return `${p.w||"–"}×${p.r||"–"}`;}
 function keyOf(slot){return plan+"|"+cur+"|"+slot;}
 function lastFor(slot,kind){
   const l=log();
@@ -198,8 +200,9 @@ function renderTrain(){
     const st=live[k],kind=st.kind;
     const vr=(P().variations[slot]||{})[kind]||Object.values(P().variations[slot]||{})[0];
     const cue=vr?(P().cues[vr.name]||""):"";
+    const timeBased=isTimeScheme(scheme),weighted=kind!=='bw';
     if(!st.sets){const lp=lastFor(slot,kind),n=parseTarget(scheme);
-      st.sets=Array.from({length:n},(_,j)=>({w:"",r:"",last:lp&&lp[j]?`${lp[j].w||"–"}×${lp[j].r||"–"}`:""}));}
+      st.sets=Array.from({length:n},(_,j)=>({w:"",r:"",last:fmtLast(lp&&lp[j],weighted,timeBased)}));}
     const kinds=Object.keys(P().variations[slot]||{});
     const kIdx=Math.max(0,kinds.indexOf(kind));
     const card=document.createElement('div');card.className="ex"+(st.done?" done":"");
@@ -218,10 +221,9 @@ function renderTrain(){
         <div class="imgcell"><span class="tag">Finish</span><img loading="lazy" src="${vr.img2}"></div></div>`;}
     if(force)h+=`<div class="force-note ${st.force?'show':''}"><b>💪 Strength:</b> ${force} — heavier, fewer reps, longer rest.</div>`;
     h+=`<div class="sets">`;
-    st.sets.forEach((set,j)=>{h+=`<div class="setrow"><div class="sl">SET ${j+1}</div>
-      <input inputmode="decimal" placeholder="kg" value="${set.w}" class="${set.w?'filled':''}" data-sk="${k}" data-si="${j}" data-f="w">
-      <span class="x">×</span>
-      <input inputmode="numeric" placeholder="reps" value="${set.r}" class="${set.r?'filled':''}" data-sk="${k}" data-si="${j}" data-f="r">
+    st.sets.forEach((set,j)=>{h+=`<div class="setrow ${weighted?'':'noweight'}"><div class="sl">SET ${j+1}</div>`+
+      (weighted?`<input inputmode="decimal" placeholder="kg" value="${set.w}" class="${set.w?'filled':''}" data-sk="${k}" data-si="${j}" data-f="w"><span class="x">×</span>`:'')+
+      `<input inputmode="numeric" placeholder="${timeBased?'sec':'reps'}" value="${set.r}" class="${set.r?'filled':''}" data-sk="${k}" data-si="${j}" data-f="r">
       <div class="last">${set.last||''}</div></div>`;});
     h+=`</div><button class="addset" data-add="${k}">+ Add set</button></div>`;
     card.innerHTML=h;w.appendChild(card);
@@ -230,7 +232,7 @@ function renderTrain(){
   w.querySelectorAll('[data-force]').forEach(e=>e.onclick=()=>{const k=e.dataset.force;live[k].force=!live[k].force;saveDraft();renderTrain();});
   w.querySelectorAll('[data-vk]').forEach(e=>e.onclick=()=>{const k=e.dataset.vk,kind=e.dataset.kind,slot=k.split("|")[2];live[k].kind=kind;
     const cur=live[k].sets||[];const hasInput=cur.some(x=>x&&(x.w!==""||x.r!==""));
-    if(hasInput){const lp=lastFor(slot,kind);cur.forEach((x,j)=>{x.last=lp&&lp[j]?`${lp[j].w||"–"}×${lp[j].r||"–"}`:"";});}
+    if(hasInput){const lp=lastFor(slot,kind);const sl=P().sessions[cur].slots.find(x=>x[0]===slot);const tb=isTimeScheme(sl&&sl[1]),wt=kind!=='bw';cur.forEach((x,j)=>{x.last=fmtLast(lp&&lp[j],wt,tb);});}
     else{live[k].sets=null;}
     pref[plan+"|"+slot]=kind;savePref();saveDraft();renderTrain();});
   w.querySelectorAll('input[data-sk]').forEach(e=>e.oninput=()=>{const k=e.dataset.sk,i=+e.dataset.si,f=e.dataset.f;live[k].sets[i][f]=e.value;e.classList.toggle('filled',!!e.value);saveDraft();});
@@ -374,7 +376,7 @@ function showDay(key,evs){
     const canRepeat=DATA.plans[e.plan]&&DATA.plans[e.plan].sessions[e.sess];
     h+=`<div class="hentry"><div class="hd"><span class="hbadge" style="color:${HUEof(e)}">${DATA.plans[e.plan]?DATA.plans[e.plan].icon:''} ${pl} \u00B7 ${e.name}</span>`;
     h+=`<span class="htime">${new Date(e.date).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span></div><div class="hln">`;
-    h+=(e.slots||[]).map(s=>{const sets=(s.sets||[]).map(x=>`${x.w||'\u2013'}\u00D7${x.r||'\u2013'}`).join('  ');
+    h+=(e.slots||[]).map(s=>{const sets=(s.sets||[]).map(x=>s.kind==='bw'?`${x.r||'\u2013'}`:`${x.w||'\u2013'}\u00D7${x.r||'\u2013'}`).join('  ');
       return `<b>${s.slot}</b> <span style="color:var(--mut)">${s.kind}${s.force?' \u00B7 \u{1F4AA}':''}</span> ${sets||'\u2713'}`;}).join('<br>');
     h+=`</div>`;
     if(canRepeat)h+=`<button class="btn sec" style="margin-top:10px" onclick="editLogEntry('${e.id}')">\u25B6 Continue / edit this workout</button>`;
@@ -511,7 +513,7 @@ function showHistory(){
     const pl=DATA.plans[e.plan]?DATA.plans[e.plan].label:'';
     h+=`<div class="hentry"><div class="hd"><span class="hbadge" style="color:${HUEof(e)}">${pl} · ${e.name}</span>
       <span class="htime">${d.toLocaleDateString(undefined,{month:'short',day:'numeric'})} · ${d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span></div><div class="hln">`;
-    h+=(e.slots||[]).map(s=>{const sets=(s.sets||[]).map(x=>`${x.w||'–'}×${x.r||'–'}`).join('  ');
+    h+=(e.slots||[]).map(s=>{const sets=(s.sets||[]).map(x=>s.kind==='bw'?`${x.r||'–'}`:`${x.w||'–'}×${x.r||'–'}`).join('  ');
       return `<b>${s.slot}</b> <span style="color:var(--mut)">${s.kind}${s.force?' · 💪':''}</span> ${sets||'✓'}`;}).join('<br>');
     h+=`</div></div>`;});
   if(l.length)h+=`<button class="btn sec" onclick="exportData()">⬇︎ Export backup (JSON)</button>`;
