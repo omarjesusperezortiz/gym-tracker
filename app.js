@@ -1,8 +1,9 @@
 
 // DATA is loaded from data.js
-const LS_LOG="obt_log_v2", LS_PREF="obt_pref_v2", LS_GH="obt_gh_v1", LS_PLAN="obt_plan_v1", LS_DRAFT="obt_draft_v1";
+const LS_LOG="obt_log_v2", LS_PREF="obt_pref_v2", LS_GH="obt_gh_v1", LS_PLAN="obt_plan_v1", LS_DRAFT="obt_draft_v1", LS_RECO="obt_reco_v1";
 let plan=localStorage.getItem(LS_PLAN)||"gym";
-let cur=null, view="home", started=false, editingId=null, editingKey=null;
+let cur=null, view="today", started=false, editingId=null, editingKey=null;
+let reco=JSON.parse(localStorage.getItem(LS_RECO)||"null"), recoFetching=false;
 let live=JSON.parse(localStorage.getItem(LS_DRAFT)||"{}"), calMonth=new Date();
 // The draft carries a reserved __meta entry so an in-progress EDIT survives reloads
 // and navigating around (Home, resume card). It is stripped out of `live` on load.
@@ -28,7 +29,8 @@ const ico={
  meal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h0a2 2 0 002-2V2M5 2v20M13 2v20M13 8c0-3 1.5-6 4-6v20"/></svg>',
  gear:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>',
  empty:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6.5 6.5l11 11M2 6l4-4M18 22l4-4"/></svg>',
- progress:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 9l-5 5-4-4-3 3"/></svg>'
+ progress:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 9l-5 5-4-4-3 3"/></svg>',
+ today:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8L6 18M18 6l1.8-1.8"/></svg>'
 };
 const DAYCOLORS=["#ff9f4d","var(--push)","var(--pull)","#5ad6c4","#ff6b9d","#7c9dff","var(--warn)","var(--full)","var(--violet)"];
 function dayColor(planKey,dayKey){const keys=Object.keys(DATA.plans[planKey].sessions);const i=keys.indexOf(dayKey);return DAYCOLORS[(i>=0?i:0)%DAYCOLORS.length];}
@@ -59,9 +61,9 @@ function renderShell(){
   $("#planrow").innerHTML=ph;
   $("#planrow").querySelectorAll('[data-plan]').forEach(e=>e.onclick=()=>{plan=e.dataset.plan;localStorage.setItem(LS_PLAN,plan);cur=null;live={};render();});
   // nav
-  const navs=[["home","Home",ico.home],["calendar","Calendar",ico.cal],["progress","Progress",ico.progress],["meals","Meals",ico.meal]];
+  const navs=[["today","Today",ico.today],["home","Home",ico.home],["calendar","Calendar",ico.cal],["progress","Progress",ico.progress],["meals","Meals",ico.meal]];
   $("#nav").innerHTML=navs.map(([v,l,i])=>`<div class="ni ${v===view?'active':''}" data-view="${v}">${i}<span>${l}</span></div>`).join('');
-  $("#nav").querySelectorAll('[data-view]').forEach(e=>e.onclick=()=>{view=e.dataset.view;if(view==='home')started=false;render();});
+  $("#nav").querySelectorAll('[data-view]').forEach(e=>e.onclick=()=>{view=e.dataset.view;if(view==='home')started=false;if(view==='today')refreshRecommendation();render();});
 }
 function renderTabs(){
   const t=$("#tabs");t.innerHTML="";
@@ -87,13 +89,102 @@ function render(){
   $("#planrow").style.display='none';
   $("#trainbar").classList.toggle('show',inTrain);if(inTrain)renderTrainbar();
   $("#dock").classList.toggle('hide',!inTrain);
-  if(view==='home')renderHome();
+  if(view==='today')renderToday();
+  else if(view==='home')renderHome();
   else if(view==='train')renderTrain();
   else if(view==='calendar')renderCalendar();
   else if(view==='progress')renderProgress();
   else renderMeals();
 }
 
+
+/* ---------- TODAY (recommendation) ---------- */
+function relTime(iso){
+  const t=new Date(iso).getTime();if(isNaN(t))return null;
+  const diffSec=Math.round((Date.now()-t)/1000);
+  if(diffSec<60)return"just now";
+  const m=Math.round(diffSec/60);if(m<60)return`${m}m ago`;
+  const hr=Math.round(m/60);if(hr<24)return`${hr}h ago`;
+  return`${Math.round(hr/24)}d ago`;
+}
+// Simple client-side pick when no server recommendation is available: the broad
+// (push/pull/full-body) session that was trained longest ago (or never).
+function localRecoFallback(){
+  const pk=DATA.plans.gym?'gym':Object.keys(DATA.plans)[0];
+  const sessions=DATA.plans[pk].sessions;
+  const broad=Object.keys(sessions).filter(k=>(sessions[k].group||'focused')==='broad');
+  const pool=broad.length?broad:Object.keys(sessions);
+  const l=log();
+  let best=pool[0],bestDays=-1;
+  pool.forEach(k=>{
+    const last=l.filter(e=>!e.type&&e.plan===pk&&e.sess===k).sort((a,b)=>new Date(b.date)-new Date(a.date))[0];
+    const days=last?Math.floor((Date.now()-new Date(last.date).getTime())/86400000):9999;
+    if(days>bestDays){bestDays=days;best=k;}
+  });
+  const s=sessions[best];
+  return{
+    date:new Date().toISOString().slice(0,10),generatedAt:null,type:'train',plan:pk,session:best,
+    sessionName:s.name,emoji:s.emoji,title:`Today: ${s.name} ${s.emoji||''}`.trim(),
+    reason:bestDays>=9999?`You haven't logged ${s.name} yet — good place to start.`
+      :`${s.name} was your least-recently trained session (${bestDays} day${bestDays!==1?'s':''} ago).`,
+    exercises:(s.slots||[]).map(sl=>sl[0]),stats:{}
+  };
+}
+// Opens a plan+session as a FRESH workout in the training view — the same navigation
+// used by the Home dashboard's day rows / resume card (syncEditContext keeps an
+// in-progress edit of that exact session alive, but never carries over from another one).
+function openSession(pk,sk){
+  if(!pk||!DATA.plans[pk]||!DATA.plans[pk].sessions[sk]){toast("That session isn't available");return;}
+  plan=pk;localStorage.setItem(LS_PLAN,plan);cur=sk;syncEditContext();
+  started=true;view='train';window.scrollTo(0,0);render();
+}
+async function refreshRecommendation(){
+  if(recoFetching)return;
+  recoFetching=true;
+  try{
+    const r=await fetchRecommendation();
+    if(r){reco=r;localStorage.setItem(LS_RECO,JSON.stringify(reco));if(view==='today')renderToday();}
+  }catch(e){/* keep showing cached/fallback — never crash the page */}
+  recoFetching=false;
+}
+function renderToday(){
+  const w=$("#wrap");
+  try{
+    const r=reco||localRecoFallback();
+    const isFallback=!reco;
+    const today=new Date().toISOString().slice(0,10);
+    const stale=!!(r.date&&r.date!==today);
+    const updated=r.generatedAt?relTime(r.generatedAt):null;
+    let h=`<div class="today-view">`;
+    if(r.type==='rest'){
+      h+=`<div class="today-card rest">
+        <div class="today-badge">${isFallback?'Local suggestion':'Recommended'}${stale?` · from ${r.date}`:''}</div>
+        <div class="today-emoji">${r.emoji||'😴'}</div>
+        <div class="today-title">${r.title||'Rest day'}</div>
+        <div class="today-reason">${r.reason||'Take it easy today — recovery matters.'}</div>
+        <button class="btn sec" style="padding:14px" data-today-light>Do a light session anyway</button>
+      </div>`;
+    }else{
+      h+=`<div class="today-card">
+        <div class="today-badge">${isFallback?'Local suggestion':'Recommended'}${stale?` · from ${r.date}`:''}</div>
+        <div class="today-emoji">${r.emoji||'💪'}</div>
+        <div class="today-title">${r.title||('Today: '+(r.sessionName||r.session||''))}</div>
+        <div class="today-reason">${r.reason||''}</div>
+        ${(r.exercises||[]).length?`<div class="today-exlist">${r.exercises.map((x,i)=>`<div class="today-ex"><span class="today-exn">${i+1}</span>${x}</div>`).join('')}</div>`:''}
+        <button class="btn acc" style="padding:14px" data-today-start>Start this workout</button>
+      </div>`;
+    }
+    if(updated||r.date)h+=`<div class="today-meta">${updated?`Updated ${updated}`:''}${updated&&r.date?' · ':''}${r.date?`for ${r.date}`:''}</div>`;
+    h+=`</div>`;
+    w.innerHTML=h;
+    const startBtn=w.querySelector('[data-today-start]');
+    if(startBtn)startBtn.onclick=()=>openSession(r.plan,r.session);
+    const lightBtn=w.querySelector('[data-today-light]');
+    if(lightBtn)lightBtn.onclick=()=>{const fb=localRecoFallback();openSession(fb.plan,fb.session);};
+  }catch(e){
+    w.innerHTML=`<div class="today-view"><div class="empty">${ico.empty}<br>Couldn't load today's recommendation.</div></div>`;
+  }
+}
 
 /* ---------- HOME (dashboard) ---------- */
 function inProgressSessions(){
@@ -537,10 +628,24 @@ function showSettings(){
 function saveGh(){const repo=$("#gh-repo").value.replace(/\s+/g,''),token=$("#gh-token").value.replace(/\s+/g,'');
   if(!repo||!token){toast("Fill both fields");return;}gh={repo,token};localStorage.setItem(LS_GH,JSON.stringify(gh));toast("Saved — syncing…");mergeSync();}
 function disconnectGh(){gh=null;localStorage.removeItem(LS_GH);syncState="off";toast("Disconnected");showSettings();}
-async function ghGet(){const r=await fetch(`https://api.github.com/repos/${gh.repo}/contents/workouts.json`,{headers:{Authorization:`Bearer ${gh.token}`,Accept:"application/vnd.github+json"}});
-  if(r.status===404)return{data:{sessions:[]},sha:null};
+// Generic reader for any file in the configured gym-data repo (same auth/repo as workouts.json).
+async function ghGetFile(path){
+  const r=await fetch(`https://api.github.com/repos/${gh.repo}/contents/${path}`,{headers:{Authorization:`Bearer ${gh.token}`,Accept:"application/vnd.github+json"}});
+  if(r.status===404)return{data:null,sha:null,notFound:true};
   if(!r.ok)throw new Error("GET "+r.status+(r.status===401?" (bad/expired token)":r.status===403?" (token lacks Contents R/W)":r.status===404?" (repo not found)":""));
-  const j=await r.json();return{data:JSON.parse(decodeURIComponent(escape(atob(j.content)))),sha:j.sha};}
+  const j=await r.json();return{data:JSON.parse(decodeURIComponent(escape(atob(j.content)))),sha:j.sha,notFound:false};
+}
+async function ghGet(){
+  const {data,sha,notFound}=await ghGetFile('workouts.json');
+  return notFound?{data:{sessions:[]},sha:null}:{data,sha};
+}
+// Reads recommendation.json (sibling of workouts.json, same gym-data repo). Returns null
+// (never throws to the caller) when there's no token, it's offline, or the file is missing.
+async function fetchRecommendation(){
+  if(!gh||!gh.token)return null;
+  try{const {data,notFound}=await ghGetFile('recommendation.json');return notFound?null:data;}
+  catch(e){return null;}
+}
 async function ghPut(data,sha){const body={message:"workout sync "+new Date().toISOString(),content:btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2))))};if(sha)body.sha=sha;
   const r=await fetch(`https://api.github.com/repos/${gh.repo}/contents/workouts.json`,{method:"PUT",headers:{Authorization:`Bearer ${gh.token}`,Accept:"application/vnd.github+json"},body:JSON.stringify(body)});
   if(!r.ok)throw new Error("PUT "+r.status);return r.json();}
@@ -628,3 +733,4 @@ $("#modal").onclick=e=>{if(e.target.id==='modal')hideModal();};
 initSheetDrag();
 render();
 if(gh&&gh.token){syncState="ok";pullSync(false);}
+refreshRecommendation();
