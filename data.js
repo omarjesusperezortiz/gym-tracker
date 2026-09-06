@@ -383,6 +383,11 @@ const DATA = {
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Chest_Press/0.jpg",
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Chest_Press/1.jpg"
      },
+     "machine": {
+      "name": "Machine Bench Press",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Machine_Bench_Press/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Machine_Bench_Press/1.jpg"
+     },
      "db": {
       "name": "Dumbbell Bench Press",
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bench_Press/0.jpg",
@@ -396,6 +401,11 @@ const DATA = {
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Bent_Over_Barbell_Row/1.jpg"
      },
      "cable": {
+      "name": "Seated Cable Rows",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Seated_Cable_Rows/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Seated_Cable_Rows/1.jpg"
+     },
+     "machine": {
       "name": "Seated Cable Rows",
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Seated_Cable_Rows/0.jpg",
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Seated_Cable_Rows/1.jpg"
@@ -417,6 +427,11 @@ const DATA = {
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Shoulder_Press/0.jpg",
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Shoulder_Press/1.jpg"
      },
+     "machine": {
+      "name": "Machine Shoulder (Military) Press",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Machine_Shoulder_Military_Press/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Machine_Shoulder_Military_Press/1.jpg"
+     },
      "db": {
       "name": "Standing Dumbbell Press",
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Dumbbell_Press/0.jpg",
@@ -430,6 +445,11 @@ const DATA = {
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Pullups/1.jpg"
      },
      "cable": {
+      "name": "Wide-Grip Lat Pulldown",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Wide-Grip_Lat_Pulldown/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Wide-Grip_Lat_Pulldown/1.jpg"
+     },
+     "machine": {
       "name": "Wide-Grip Lat Pulldown",
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Wide-Grip_Lat_Pulldown/0.jpg",
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Wide-Grip_Lat_Pulldown/1.jpg"
@@ -451,6 +471,11 @@ const DATA = {
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Hammer_Curls_-_Rope_Attachment/0.jpg",
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Hammer_Curls_-_Rope_Attachment/1.jpg"
      },
+     "machine": {
+      "name": "Machine Bicep Curl",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Machine_Bicep_Curl/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Machine_Bicep_Curl/1.jpg"
+     },
      "db": {
       "name": "Dumbbell Bicep Curl",
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Bicep_Curl/0.jpg",
@@ -464,6 +489,11 @@ const DATA = {
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Lying_Triceps_Press/1.jpg"
      },
      "cable": {
+      "name": "Triceps Pushdown",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Triceps_Pushdown/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Triceps_Pushdown/1.jpg"
+     },
+     "machine": {
       "name": "Triceps Pushdown",
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Triceps_Pushdown/0.jpg",
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Triceps_Pushdown/1.jpg"
@@ -484,6 +514,11 @@ const DATA = {
       "name": "Low Cable Crossover",
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Low_Cable_Crossover/0.jpg",
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Low_Cable_Crossover/1.jpg"
+     },
+     "machine": {
+      "name": "Leverage Incline Chest Press",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Leverage_Incline_Chest_Press/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Leverage_Incline_Chest_Press/1.jpg"
      },
      "db": {
       "name": "Incline Dumbbell Press",
@@ -516,6 +551,11 @@ const DATA = {
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Face_Pull/0.jpg",
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Face_Pull/1.jpg"
      },
+     "machine": {
+      "name": "Reverse Machine Flyes",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Reverse_Machine_Flyes/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Reverse_Machine_Flyes/1.jpg"
+     },
      "db": {
       "name": "Seated Bent-Over Rear Delt Raise",
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Seated_Bent-Over_Rear_Delt_Raise/0.jpg",
@@ -533,6 +573,11 @@ const DATA = {
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Shrugs/0.jpg",
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Shrugs/1.jpg"
      },
+     "machine": {
+      "name": "Cable Shrugs",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Shrugs/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Shrugs/1.jpg"
+     },
      "db": {
       "name": "Dumbbell Shrug",
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Shrug/0.jpg",
@@ -541,6 +586,11 @@ const DATA = {
     },
     "Hammer curl": {
      "cable": {
+      "name": "Cable Hammer Curls - Rope Attachment",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Hammer_Curls_-_Rope_Attachment/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Hammer_Curls_-_Rope_Attachment/1.jpg"
+     },
+     "machine": {
       "name": "Cable Hammer Curls - Rope Attachment",
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Hammer_Curls_-_Rope_Attachment/0.jpg",
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Hammer_Curls_-_Rope_Attachment/1.jpg"
@@ -556,6 +606,11 @@ const DATA = {
       "name": "Barbell Full Squat",
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Full_Squat/0.jpg",
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Full_Squat/1.jpg"
+     },
+     "machine": {
+      "name": "Leg Press",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Leg_Press/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Leg_Press/1.jpg"
      },
      "db": {
       "name": "Dumbbell Squat",
@@ -574,6 +629,11 @@ const DATA = {
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Crunch/0.jpg",
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Crunch/1.jpg"
      },
+     "machine": {
+      "name": "Hanging Leg Raise",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Hanging_Leg_Raise/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Hanging_Leg_Raise/1.jpg"
+     },
      "db": {
       "name": "Weighted Crunches",
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Weighted_Crunches/0.jpg",
@@ -586,6 +646,11 @@ const DATA = {
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Crossover/0.jpg",
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Crossover/1.jpg"
      },
+     "machine": {
+      "name": "Butterfly",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Butterfly/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Butterfly/1.jpg"
+     },
      "db": {
       "name": "Dumbbell Flyes",
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Flyes/0.jpg",
@@ -597,10 +662,20 @@ const DATA = {
       "name": "Dips - Chest Version",
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dips_-_Chest_Version/0.jpg",
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dips_-_Chest_Version/1.jpg"
+     },
+     "machine": {
+      "name": "Dip Machine",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dip_Machine/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dip_Machine/1.jpg"
      }
     },
     "Lat pullover / straight-arm": {
      "cable": {
+      "name": "Straight-Arm Pulldown",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Straight-Arm_Pulldown/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Straight-Arm_Pulldown/1.jpg"
+     },
+     "machine": {
       "name": "Straight-Arm Pulldown",
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Straight-Arm_Pulldown/0.jpg",
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Straight-Arm_Pulldown/1.jpg"
@@ -639,6 +714,11 @@ const DATA = {
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Upright_Cable_Row/0.jpg",
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Upright_Cable_Row/1.jpg"
      },
+     "machine": {
+      "name": "Smith Machine Upright Row",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Smith_Machine_Upright_Row/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Smith_Machine_Upright_Row/1.jpg"
+     },
      "db": {
       "name": "Standing Dumbbell Upright Row",
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Dumbbell_Upright_Row/0.jpg",
@@ -647,6 +727,11 @@ const DATA = {
     },
     "Overhead triceps": {
      "cable": {
+      "name": "Cable Rope Overhead Triceps Extension",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Rope_Overhead_Triceps_Extension/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Rope_Overhead_Triceps_Extension/1.jpg"
+     },
+     "machine": {
       "name": "Cable Rope Overhead Triceps Extension",
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Rope_Overhead_Triceps_Extension/0.jpg",
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Rope_Overhead_Triceps_Extension/1.jpg"
@@ -663,6 +748,11 @@ const DATA = {
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Palms-Up_Barbell_Wrist_Curl_Over_A_Bench/0.jpg",
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Palms-Up_Barbell_Wrist_Curl_Over_A_Bench/1.jpg"
      },
+     "machine": {
+      "name": "Cable Wrist Curl",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Wrist_Curl/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Wrist_Curl/1.jpg"
+     },
      "db": {
       "name": "Palms-Down Dumbbell Wrist Curl Over A Bench",
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Palms-Down_Dumbbell_Wrist_Curl_Over_A_Bench/0.jpg",
@@ -674,6 +764,11 @@ const DATA = {
       "name": "Barbell Lunge",
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Lunge/0.jpg",
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Lunge/1.jpg"
+     },
+     "machine": {
+      "name": "Leg Press",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Leg_Press/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Leg_Press/1.jpg"
      },
      "db": {
       "name": "Dumbbell Lunges",
@@ -687,6 +782,11 @@ const DATA = {
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Romanian_Deadlift/0.jpg",
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Romanian_Deadlift/1.jpg"
      },
+     "machine": {
+      "name": "Lying Leg Curls",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Lying_Leg_Curls/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Lying_Leg_Curls/1.jpg"
+     },
      "db": {
       "name": "Stiff-Legged Dumbbell Deadlift",
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Stiff-Legged_Dumbbell_Deadlift/0.jpg",
@@ -698,6 +798,11 @@ const DATA = {
       "name": "Standing Barbell Calf Raise",
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Barbell_Calf_Raise/0.jpg",
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Barbell_Calf_Raise/1.jpg"
+     },
+     "machine": {
+      "name": "Standing Calf Raises",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Calf_Raises/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Calf_Raises/1.jpg"
      },
      "db": {
       "name": "Standing Dumbbell Calf Raise",
@@ -780,19 +885,19 @@ const DATA = {
     "Cable Chest Press": "Press cable handles forward, squeeze chest.",
     "Dumbbell Bench Press": "DBs at chest, press up and slightly together.",
     "Bent Over Barbell Row": "Hinge, row bar to lower ribs, squeeze blades.",
-    "Seated Cable Rows": "Pull handle to stomach, squeeze shoulder blades.",
+    "Seated Cable Rows": "Row to torso, squeeze shoulder blades, don't lean back much.",
     "One-Arm Dumbbell Row": "Hand on bench, row DB to hip, squeeze.",
     "Standing Military Press": "Press bar overhead from shoulders, brace core.",
     "Standing Palms-In Dumbbell Press": "Neutral-grip DB press overhead.",
     "Standing Dumbbell Press": "Press DBs overhead, don't over-flare.",
     "Pullups": "Pull chin over bar. Band-assist if needed.",
-    "Wide-Grip Lat Pulldown": "Pull bar to upper chest, drive elbows down.",
+    "Wide-Grip Lat Pulldown": "Pull bar to upper chest, drive elbows down, control up.",
     "Bent Over Two-Dumbbell Row": "Hinge, row both DBs to hips, squeeze.",
     "Barbell Curl": "Curl bar, no swing, squeeze at top.",
-    "Cable Hammer Curls - Rope Attachment": "Rope curl, neutral grip, control.",
+    "Cable Hammer Curls - Rope Attachment": "Neutral grip, curl rope up, control down.",
     "Dumbbell Bicep Curl": "Curl DBs, squeeze top, control down.",
     "Lying Triceps Press": "Skull-crusher: lower bar to forehead, extend.",
-    "Triceps Pushdown": "Elbows pinned, extend down, squeeze.",
+    "Triceps Pushdown": "Elbows pinned, push down, full extension, control up.",
     "Standing Dumbbell Triceps Extension": "DB overhead, extend up, elbows still.",
     "Barbell Incline Bench Press - Medium Grip": "Incline bar press for upper chest.",
     "Low Cable Crossover": "Low-to-high cable flye for upper chest.",
@@ -803,7 +908,7 @@ const DATA = {
     "Face Pull": "Rope to face, elbows high — great for skater shoulders.",
     "Seated Bent-Over Rear Delt Raise": "Hinge seated, raise DBs out, squeeze rear delts.",
     "Barbell Shrug": "Shrug shoulders up, squeeze traps, lower.",
-    "Cable Shrugs": "Shrug against cable, hold at top.",
+    "Cable Shrugs": "",
     "Dumbbell Shrug": "Shrug DBs up, squeeze traps.",
     "Hammer Curls": "Neutral grip curl — biceps + forearm.",
     "Barbell Full Squat": "Bar on back, sit down to depth, drive up.",
@@ -814,7 +919,7 @@ const DATA = {
     "Cable Crossover": "Bring handles together in front, squeeze.",
     "Dumbbell Flyes": "Wide arc, slight elbow bend, squeeze at top.",
     "Dips - Chest Version": "Lean forward on dip bars, lower, press up (chest).",
-    "Straight-Arm Pulldown": "Arms straight, pull bar to thighs — lats.",
+    "Straight-Arm Pulldown": "Arms straight, pull bar down to thighs using lats.",
     "Bent-Arm Dumbbell Pullover": "",
     "Front Plate Raise": "Raise plate to front to eye level.",
     "Front Cable Raise": "Cable raise to front, control.",
@@ -822,7 +927,7 @@ const DATA = {
     "Upright Barbell Row": "Pull bar up along body to chest, elbows high.",
     "Upright Cable Row": "Cable pull up to chest, elbows lead.",
     "Standing Dumbbell Upright Row": "",
-    "Cable Rope Overhead Triceps Extension": "Rope overhead, extend, stretch triceps.",
+    "Cable Rope Overhead Triceps Extension": "Rope overhead, extend arms up, stretch at bottom.",
     "Palms-Up Barbell Wrist Curl Over A Bench": "",
     "Palms-Down Dumbbell Wrist Curl Over A Bench": "",
     "Barbell Lunge": "Bar on back, lunge forward, push up.",
@@ -837,7 +942,19 @@ const DATA = {
     "Russian Twist": "Seated, lean back, rotate side to side. Add weight to progress.",
     "Side Bridge": "On side, forearm down, hips up, straight line, hold.",
     "Pallof Press": "Cable/band from the side, press straight out, resist the twist.",
-    "Reverse Crunch": "Knees up, curl hips toward chest, control down."
+    "Reverse Crunch": "Knees up, curl hips toward chest, control down.",
+    "Machine Bench Press": "Seated, press handles forward, control back to chest level.",
+    "Leverage Incline Chest Press": "Incline machine, press up and in, squeeze chest.",
+    "Butterfly": "Pec deck: bring pads together in front, squeeze, slow return.",
+    "Machine Shoulder (Military) Press": "Press handles overhead, don't shrug, control down.",
+    "Smith Machine Upright Row": "Pull bar up to chest height, elbows lead, lower slow.",
+    "Reverse Machine Flyes": "Face pad, open arms back squeezing rear delts.",
+    "Machine Bicep Curl": "Curl handles up, squeeze biceps, slow negative.",
+    "Dip Machine": "",
+    "Leg Press": "Feet shoulder-width, lower to ~90°, press through heels, don't lock hard.",
+    "Lying Leg Curls": "Curl pad to glutes, squeeze hamstrings, slow release.",
+    "Standing Calf Raises": "Rise onto toes, full squeeze, slow stretch down.",
+    "Cable Wrist Curl": "Curl the wrists up, slow down, full range."
    }
   },
   "cal": {

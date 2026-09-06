@@ -17,7 +17,7 @@ let gh=JSON.parse(localStorage.getItem(LS_GH)||"null");
 let syncState="off";
 let progExercise=null;
 const $=s=>document.querySelector(s);
-const KINDLABEL={bar:"Barbell",cable:"Cable",db:"Dumbbell",gym:"Gym",bw:"Bodyweight"};
+const KINDLABEL={bar:"Barbell",cable:"Cable",machine:"Machine",db:"Dumbbell",gym:"Gym",bw:"Bodyweight"};
 const ico={
  home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V21a1 1 0 01-1 1h-5v-7H9v7H4a1 1 0 01-1-1z"/></svg>',
  back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>',
