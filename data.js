@@ -406,9 +406,9 @@ const DATA = {
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Seated_Cable_Rows/1.jpg"
      },
      "machine": {
-      "name": "Seated Cable Rows",
-      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Seated_Cable_Rows/0.jpg",
-      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Seated_Cable_Rows/1.jpg"
+      "name": "Leverage High Row",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Leverage_High_Row/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Leverage_High_Row/1.jpg"
      },
      "db": {
       "name": "One-Arm Dumbbell Row",
@@ -445,11 +445,6 @@ const DATA = {
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Pullups/1.jpg"
      },
      "cable": {
-      "name": "Wide-Grip Lat Pulldown",
-      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Wide-Grip_Lat_Pulldown/0.jpg",
-      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Wide-Grip_Lat_Pulldown/1.jpg"
-     },
-     "machine": {
       "name": "Wide-Grip Lat Pulldown",
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Wide-Grip_Lat_Pulldown/0.jpg",
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Wide-Grip_Lat_Pulldown/1.jpg"
@@ -494,9 +489,9 @@ const DATA = {
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Triceps_Pushdown/1.jpg"
      },
      "machine": {
-      "name": "Triceps Pushdown",
-      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Triceps_Pushdown/0.jpg",
-      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Triceps_Pushdown/1.jpg"
+      "name": "Machine Triceps Extension",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Machine_Triceps_Extension/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Machine_Triceps_Extension/1.jpg"
      },
      "db": {
       "name": "Standing Dumbbell Triceps Extension",
@@ -574,9 +569,9 @@ const DATA = {
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Shrugs/1.jpg"
      },
      "machine": {
-      "name": "Cable Shrugs",
-      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Shrugs/0.jpg",
-      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Shrugs/1.jpg"
+      "name": "Leverage Shrug",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Leverage_Shrug/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Leverage_Shrug/1.jpg"
      },
      "db": {
       "name": "Dumbbell Shrug",
@@ -591,9 +586,9 @@ const DATA = {
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Hammer_Curls_-_Rope_Attachment/1.jpg"
      },
      "machine": {
-      "name": "Cable Hammer Curls - Rope Attachment",
-      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Hammer_Curls_-_Rope_Attachment/0.jpg",
-      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Hammer_Curls_-_Rope_Attachment/1.jpg"
+      "name": "Machine Bicep Curl",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Machine_Bicep_Curl/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Machine_Bicep_Curl/1.jpg"
      },
      "db": {
       "name": "Hammer Curls",
@@ -628,11 +623,6 @@ const DATA = {
       "name": "Cable Crunch",
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Crunch/0.jpg",
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Crunch/1.jpg"
-     },
-     "machine": {
-      "name": "Hanging Leg Raise",
-      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Hanging_Leg_Raise/0.jpg",
-      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Hanging_Leg_Raise/1.jpg"
      },
      "db": {
       "name": "Weighted Crunches",
@@ -671,11 +661,6 @@ const DATA = {
     },
     "Lat pullover / straight-arm": {
      "cable": {
-      "name": "Straight-Arm Pulldown",
-      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Straight-Arm_Pulldown/0.jpg",
-      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Straight-Arm_Pulldown/1.jpg"
-     },
-     "machine": {
       "name": "Straight-Arm Pulldown",
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Straight-Arm_Pulldown/0.jpg",
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Straight-Arm_Pulldown/1.jpg"
@@ -732,9 +717,9 @@ const DATA = {
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Rope_Overhead_Triceps_Extension/1.jpg"
      },
      "machine": {
-      "name": "Cable Rope Overhead Triceps Extension",
-      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Rope_Overhead_Triceps_Extension/0.jpg",
-      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Rope_Overhead_Triceps_Extension/1.jpg"
+      "name": "Machine Triceps Extension",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Machine_Triceps_Extension/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Machine_Triceps_Extension/1.jpg"
      },
      "db": {
       "name": "Standing Dumbbell Triceps Extension",
@@ -747,11 +732,6 @@ const DATA = {
       "name": "Palms-Up Barbell Wrist Curl Over A Bench",
       "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Palms-Up_Barbell_Wrist_Curl_Over_A_Bench/0.jpg",
       "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Palms-Up_Barbell_Wrist_Curl_Over_A_Bench/1.jpg"
-     },
-     "machine": {
-      "name": "Cable Wrist Curl",
-      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Wrist_Curl/0.jpg",
-      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Wrist_Curl/1.jpg"
      },
      "db": {
       "name": "Palms-Down Dumbbell Wrist Curl Over A Bench",
@@ -954,7 +934,10 @@ const DATA = {
     "Leg Press": "Feet shoulder-width, lower to ~90°, press through heels, don't lock hard.",
     "Lying Leg Curls": "Curl pad to glutes, squeeze hamstrings, slow release.",
     "Standing Calf Raises": "Rise onto toes, full squeeze, slow stretch down.",
-    "Cable Wrist Curl": "Curl the wrists up, slow down, full range."
+    "Cable Wrist Curl": "Curl the wrists up, slow down, full range.",
+    "Leverage High Row": "Chest on pad, drive elbows back, squeeze shoulder blades.",
+    "Machine Triceps Extension": "Elbows fixed, extend arms fully, control the return.",
+    "Leverage Shrug": "Grip handles, shrug shoulders straight up, hold, lower slow."
    }
   },
   "cal": {
