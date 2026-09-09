@@ -1362,9 +1362,9 @@ const DATA = {
     },
     "Side lateral raise": {
      "bw": {
-      "name": "Side Lateral Raise",
-      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Side_Lateral_Raise/0.jpg",
-      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Side_Lateral_Raise/1.jpg"
+      "name": "Lateral Raise - With Bands",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Lateral_Raise_-_With_Bands/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Lateral_Raise_-_With_Bands/1.jpg"
      }
     },
     "Plank (core)": {
@@ -1474,9 +1474,9 @@ const DATA = {
     },
     "Calf raise": {
      "bw": {
-      "name": "Standing Calf Raises",
-      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Calf_Raises/0.jpg",
-      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Calf_Raises/1.jpg"
+      "name": "Donkey Calf Raises",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Donkey_Calf_Raises/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Donkey_Calf_Raises/1.jpg"
      }
     },
     "Plank": {
@@ -1548,7 +1548,9 @@ const DATA = {
     "Air Bike": "Alternate elbow to opposite knee, slow and controlled.",
     "Russian Twist": "Seated, lean back, rotate side to side. Add weight to progress.",
     "Side Bridge": "On side, forearm down, hips up, straight line, hold.",
-    "Reverse Crunch": "Knees up, curl hips toward chest, control down."
+    "Reverse Crunch": "Knees up, curl hips toward chest, control down.",
+    "Lateral Raise - With Bands": "Hold bands underfoot, raise arms out to shoulder height, control down.",
+    "Donkey Calf Raises": "Bend at hips, raise onto toes, full squeeze, slow stretch — bodyweight."
    }
   },
   "travel": {
@@ -1973,9 +1975,9 @@ const DATA = {
     },
     "Side lateral raise": {
      "bw": {
-      "name": "Side Lateral Raise",
-      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Side_Lateral_Raise/0.jpg",
-      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Side_Lateral_Raise/1.jpg"
+      "name": "Decline Push-Up",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Decline_Push-Up/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Decline_Push-Up/1.jpg"
      }
     },
     "Plank (core)": {
@@ -2085,9 +2087,9 @@ const DATA = {
     },
     "Calf raise": {
      "bw": {
-      "name": "Standing Calf Raises",
-      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Calf_Raises/0.jpg",
-      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Calf_Raises/1.jpg"
+      "name": "Donkey Calf Raises",
+      "img": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Donkey_Calf_Raises/0.jpg",
+      "img2": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Donkey_Calf_Raises/1.jpg"
      }
     },
     "Plank": {
@@ -2143,7 +2145,7 @@ const DATA = {
    "cues": {
     "Pushups": "Body straight, chest to floor, press up. Feet up = harder.",
     "Inverted Row": "Under a bar/table, pull chest up, body straight.",
-    "Decline Push-Up": "Feet elevated push-up — hits shoulders/upper chest.",
+    "Decline Push-Up": "Feet elevated push-up — shifts load to shoulders/upper chest. Bodyweight.",
     "Pullups": "Pull chin over bar. Band-assist if needed.",
     "Chin-Up": "Underhand pull-up — biceps + back.",
     "Bench Dips": "Hands on bench behind you, lower & press up.",
@@ -2159,7 +2161,8 @@ const DATA = {
     "Air Bike": "Alternate elbow to opposite knee, slow and controlled.",
     "Russian Twist": "Seated, lean back, rotate side to side. Add weight to progress.",
     "Side Bridge": "On side, forearm down, hips up, straight line, hold.",
-    "Reverse Crunch": "Knees up, curl hips toward chest, control down."
+    "Reverse Crunch": "Knees up, curl hips toward chest, control down.",
+    "Donkey Calf Raises": "Bend at hips, rise onto toes, full squeeze, slow — bodyweight, no kit."
    }
   }
  },
