@@ -315,8 +315,8 @@ function renderTrain(){
     }
     h+=`<div class="detail">`;
     if(vr){h+=`<div class="exvarname">${vr.name}</div>`;if(cue)h+=`<div class="cue">${cue}</div>`;
-      h+=`<div class="imgs"><div class="imgcell"><span class="tag">Start</span><img loading="lazy" src="${vr.img}"></div>
-        <div class="imgcell"><span class="tag">Finish</span><img loading="lazy" src="${vr.img2}"></div></div>`;}
+      h+=`<div class="imgs"><div class="imgcell"><span class="tag">Start</span><img loading="lazy" src="${vr.img}" data-zoom="${vr.img}"></div>
+        <div class="imgcell"><span class="tag">Finish</span><img loading="lazy" src="${vr.img2}" data-zoom="${vr.img2}"></div></div>`;}
     if(force)h+=`<div class="force-note ${st.force?'show':''}"><b>💪 Strength:</b> ${force} — heavier, fewer reps, longer rest.</div>`;
     h+=`<div class="sets">`;
     st.sets.forEach((set,j)=>{h+=`<div class="setrow ${weighted?'':'noweight'}"><div class="sl">SET ${j+1}</div>`+
@@ -335,6 +335,16 @@ function renderTrain(){
     pref[plan+"|"+slot]=kind;savePref();saveDraft();renderTrain();});
   w.querySelectorAll('input[data-sk]').forEach(e=>e.oninput=()=>{const k=e.dataset.sk,i=+e.dataset.si,f=e.dataset.f;live[k].sets[i][f]=e.value;e.classList.toggle('filled',!!e.value);saveDraft();});
   w.querySelectorAll('[data-add]').forEach(e=>e.onclick=()=>{live[e.dataset.add].sets.push({w:"",r:"",last:""});saveDraft();renderTrain();});
+  w.querySelectorAll('img[data-zoom]').forEach(e=>e.onclick=()=>zoomImage(e.dataset.zoom));
+}
+function zoomImage(src){
+  let lb=$("#lightbox");
+  if(!lb){lb=document.createElement('div');lb.id="lightbox";lb.className="lightbox";document.body.appendChild(lb);}
+  lb.innerHTML=`<img src="${src}"><button class="lb-close" aria-label="Close">✕</button>`;
+  lb.classList.add('show');
+  const close=()=>lb.classList.remove('show');
+  lb.onclick=close;
+  if(navigator.vibrate)navigator.vibrate(6);
 }
 function firstKind(slot){const v=P().variations[slot];return v?Object.keys(v)[0]:"bw";}
 
