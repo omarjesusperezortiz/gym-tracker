@@ -46,12 +46,19 @@ function fmtLast(p,weighted,timeBased){if(!p)return"";if(!weighted)return timeBa
 function keyOf(slot){return plan+"|"+cur+"|"+slot;}
 function lastFor(slot,kind){
   const l=log();
-  for(let i=l.length-1;i>=0;i--){
-    if(l[i].plan!==plan||l[i].sess!==cur)continue;
-    const s=(l[i].slots||[]).find(x=>x.slot===slot);
-    if(s&&s.kind===kind&&s.sets&&s.sets.length)return s.sets;
+  // Global per-exercise history: the most recent time this exercise (slot) was
+  // logged, across ANY session/plan — chosen by latest DATE (robust to merge
+  // re-ordering), preferring the same equipment kind, else any kind.
+  let bestSame=null,bestSameT=-1,bestAny=null,bestAnyT=-1;
+  for(const e of l){
+    if(e.type&&e.type!=="workout")continue;
+    const t=Date.parse(e.date||0)||0;
+    const s=(e.slots||[]).find(x=>x.slot===slot);
+    if(!s||!s.sets||!s.sets.length)continue;
+    if(t>bestAnyT){bestAnyT=t;bestAny=s.sets;}
+    if(s.kind===kind&&t>bestSameT){bestSameT=t;bestSame=s.sets;}
   }
-  return null;
+  return bestSame||bestAny||null;
 }
 /* ---------- Header + plan + nav ---------- */
 function renderShell(){
